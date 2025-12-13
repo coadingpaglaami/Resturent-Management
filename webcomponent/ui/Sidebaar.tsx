@@ -92,7 +92,7 @@ export const SideBaar = () => {
                                 : ""
                             )}
                           >
-                            <sublink.icon className="w-4 h-4" />
+            
                             {sublink.label}
                           </Link>
                         );

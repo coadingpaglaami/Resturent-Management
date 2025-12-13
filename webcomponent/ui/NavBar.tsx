@@ -106,7 +106,7 @@ export const NavBar = () => {
             <PopoverItem>Appearance</PopoverItem>
             <PopoverItem>
               <Switch
-                onClick={() => setTheme(theme === "system" ? "dark" : "system")}
+                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
               />
             </PopoverItem>
             <PopoverItem>

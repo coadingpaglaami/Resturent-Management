@@ -1,6 +1,8 @@
+"use client";
 import {
   Card,
   CardProps,
+  DateField,
   Heading,
   Varience,
   VarienceProps,
@@ -29,21 +31,25 @@ export const Dashboard = () => {
     varienceProps,
   };
   return (
-    <div className="flex flex-col gap-4 ">
+    <div className="flex flex-col gap-4 h-auto w-full">
       <Heading
         title="Dashboard"
         subtitle="Welcome to your restaurant management dashboard"
       />
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="flex gap-3.5 items-center">
+        <DateField />
+        <DateField />
+      </div>
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {dashboardData.cardData.map((card, index) => (
           <Card key={index} {...card} />
         ))}
       </div>
-      <div className="flex flex-col md:flex-row gap-4 w-full md:items-stretch">
-        <div className="flex-1">
+      <div className="flex flex-col md:flex-row gap-4 w-full md:items-stretch h-full">
+        <div className="md:w-1/2 h-full aspect-4/3 w-full">
           <LineChart data={dashboardData.lineChartData} />
         </div>
-        <div className="flex-1">
+        <div className="md:w-1/2 h-full aspect-4/3 w-full">
           <TopSellingMenuItems data={dashboardData.topSellingMenuItems} />
         </div>
       </div>
