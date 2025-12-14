@@ -1,4 +1,3 @@
-
 import { CardProps, VarienceProps } from "@/webcomponent/reusable";
 import { TopSellingMenuItemsProps } from "./BarChart";
 import { LineChartProps } from "./LineChart";

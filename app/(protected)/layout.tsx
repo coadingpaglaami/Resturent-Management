@@ -1,7 +1,5 @@
 import { NavBar, SideBaar } from "@/webcomponent/ui";
 
-
-
 export default async function AdminLayOut({
   children,
 }: {
@@ -9,7 +7,7 @@ export default async function AdminLayOut({
 }) {
   return (
     <div className="flex h-screen w-full ">
-      <aside className="hidden md:flex md:flex-col md:w-64  shadow-md">
+      <aside className="hidden md:flex md:flex-col md:w-64 shadow-md">
         <SideBaar />
       </aside>
       <div className="flex flex-col flex-1 h-screen">

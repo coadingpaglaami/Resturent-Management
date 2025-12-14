@@ -57,7 +57,7 @@ export const NavBar = () => {
   }, []);
 
   return (
-    <div className="justify-between sticky top-0 h-16 flex items-center shadow-md z-10">
+    <div className="justify-between h-16 flex items-center shadow-md z-10">
       <Select defaultValue="downtown">
         <SelectTrigger className="w-auto flex items-center space-x-2 p-2 rounded-md">
           <LocationEditIcon className="h-4 w-4" />

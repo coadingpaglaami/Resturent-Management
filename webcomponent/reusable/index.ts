@@ -5,4 +5,4 @@ export * from "./DateField";
 export * from "./Pagination";
 export * from "./Header";
 export * from "./InputField";
-``
+export * from './ButtonIcon';

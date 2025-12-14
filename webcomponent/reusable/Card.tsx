@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 export interface CardProps {
   title: string;
   icon?: LucideIcon;
-  numString: string | number;
+  numString: string | number | ReactNode;
   belwoText?: ReactNode;
   bgColor?: string;
   bgWhite?: string;

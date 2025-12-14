@@ -6,9 +6,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardProps, Heading } from "@/webcomponent/reusable";
+import { ButtonIcon, Card, CardProps, Heading } from "@/webcomponent/reusable";
 import { cardDataInventory, mixedTableData, TableData } from "./Data";
-import { Button } from "@/components/ui/button";
 import { ArrowUp, Plus } from "lucide-react";
 import { DataBaseTable } from "./DatabaseTable";
 import { useState } from "react";
@@ -35,17 +34,21 @@ export const InventoryDatabase = () => {
           subtitle="Manage your ingredient inventory and pricing"
         />
         <div className="flex items-center gap-2.5">
-          <Button className="dark:bg-[#314158] bg-[#314158]">
-            <ArrowUp /> Import
-          </Button>
-          <Button
-            className="bg-[#4338CA]"
+          <ButtonIcon
+            varient="secondaryTwo"
+            icon={<ArrowUp className="w-4 h-4" />}
+          >
+            Import
+          </ButtonIcon>
+          <ButtonIcon
+            varient="primary"
+            icon={<Plus className="w-4 h-4" />}
             onClick={() =>
               router.push("/inventory/inventory-database/add-inventory")
             }
           >
-            <Plus /> Add Ingredient
-          </Button>
+            Add Ingredient
+          </ButtonIcon>
         </div>
       </div>
 
