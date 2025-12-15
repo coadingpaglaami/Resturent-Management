@@ -5,6 +5,7 @@ interface ButtonIconProps {
   varient?: "primary" | "secondaryTwo" | "default";
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
 export const ButtonIcon = ({
@@ -13,6 +14,7 @@ export const ButtonIcon = ({
   varient,
   onClick,
   type = "button",
+  disabled
 }: ButtonIconProps) => {
   return (
     <Button
@@ -20,6 +22,7 @@ export const ButtonIcon = ({
       className="flex items-center gap-3.5"
       onClick={onClick}
       type={type}
+      disabled={disabled}
     >
       {icon}
       {children}
