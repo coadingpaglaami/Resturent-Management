@@ -3,7 +3,7 @@ interface ButtonIconProps {
   icon: React.ReactNode;
   children: React.ReactNode;
   varient?: "primary" | "secondaryTwo" | "default";
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
 }
