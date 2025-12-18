@@ -34,19 +34,9 @@ export const SideBaar = () => {
       <nav className="flex-1 flex flex-col gap-2 overflow-y-auto">
         {sidbaarLinks.map((link) => {
           const isActive =
-            link.href === "/admin/users"
+            link.href === "/settings"
               ? pathname === link.href || pathname.startsWith(`${link.href}/`)
               : pathname === link.href;
-          console.log(
-            "Link:",
-            link.label,
-            "isActive:",
-            isActive,
-            "pathname:",
-            pathname,
-            "link.href:",
-            link.href
-          );
           if (link.dropdown) {
             const isOpen = openDropdowns.includes(link.label);
             return (

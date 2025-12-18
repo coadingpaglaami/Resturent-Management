@@ -20,7 +20,8 @@ const buttonVariants = cva(
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
         primary: "bg-button-primary text-white hover:bg-button-primary/90",
-        secondaryTwo:'bg-[#F3F4F6] dark:bg-[#314158]'
+        secondaryTwo:'bg-[#F3F4F6] dark:bg-[#314158]',
+        buttonBlue:'bg-[#155DFC] text-white hover:bg-[#155DFC]/90 cursor-pointer',
       },
 
       size: {

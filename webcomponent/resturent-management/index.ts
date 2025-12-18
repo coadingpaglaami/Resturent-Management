@@ -9,4 +9,3 @@ export * from "./recipes";
 export * from "./vendors";
 export * from "./wast&logs";
 export * from "./settings";
-export * from "./inventory";

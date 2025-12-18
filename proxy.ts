@@ -1,7 +1,10 @@
 import { NextRequest } from "next/server";
 
-export default function proxy(req:NextRequest){
-    if(req.nextUrl.pathname === '/'){
-        return Response.redirect(new URL('/dashboard',req.url));
-    }
+export default function proxy(req: NextRequest) {
+  if (req.nextUrl.pathname === "/") {
+    return Response.redirect(new URL("/dashboard", req.url));
+  }
+  if (req.nextUrl.pathname=== "/settings") {
+    return Response.redirect(new URL("/settings/organization", req.url));
+  }
 }
