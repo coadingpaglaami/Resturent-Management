@@ -22,11 +22,14 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export const NavBar = () => {
   const [isLanguageOpen, setIsLanguageOpen] = useState(false); // State to control language options visibility
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
 
   const dropdownRef = useRef<HTMLDivElement | null>(null); // Specify the type of the reference
 
@@ -79,10 +82,10 @@ export const NavBar = () => {
       {/* Notification Icon */}
 
       <div className="flex gap-4 items-center">
-        <div className="relative">
+        <Button variant={'ghost'} className="relative" onClick={()=>router.push('/notification')} >
           <BellIcon />
           <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full"></span>
-        </div>
+        </Button>
         <div className="relative bg-green-400 p-2.5 rounded-full -z-10">
           <UserIcon className="" />
         </div>
@@ -100,7 +103,7 @@ export const NavBar = () => {
           </PopoverTrigger>
           <PopoverContent
             ref={dropdownRef}
-            className="rounded-mdshadow-lg w-48"
+            className="rounded-mdshadow-lg w-48 flex flex-col gap-3.5"
           >
             <PopoverItem>Profile</PopoverItem>
             <PopoverItem>Appearance</PopoverItem>
@@ -135,6 +138,7 @@ export const NavBar = () => {
                     damping: 25,
                     ease: "easeInOut",
                   }}
+                  className="mt-2.5 flex flex-col gap-3"
                 >
                   <PopoverItem>English</PopoverItem>
                   <PopoverItem>Spanish</PopoverItem>
@@ -155,7 +159,7 @@ const PopoverItem = ({
   children: React.ReactNode;
   onClick?: () => void;
 }) => (
-  <div className="cursor-pointer p-2" onClick={onClick}>
+  <div className="cursor-pointer " onClick={onClick}>
     {children}
   </div>
 );

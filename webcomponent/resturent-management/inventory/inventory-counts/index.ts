@@ -1,3 +1,3 @@
 export * from './InventoryCount';
 export * from './Data';
-export * from './view';
+export * from './inventoryview';

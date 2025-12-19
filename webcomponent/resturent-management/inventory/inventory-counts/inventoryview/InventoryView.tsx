@@ -1,5 +1,5 @@
 "use client";
-import { InventoryCountData, View } from "../Data";
+import { InventoryCountData, ViewInventory } from "../Data";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, ChevronUp, ArrowLeft, Plus, Minus } from "lucide-react";
@@ -100,7 +100,7 @@ export const InventoryCountDataComponent = ({
     inventory.viewTable || []
   );
 
-  const allViews: View[] =
+  const allViews: ViewInventory[] =
     inventory.viewTable?.flatMap((section) => section.view) ?? [];
   const totals = allViews.reduce(
     (acc, item) => {

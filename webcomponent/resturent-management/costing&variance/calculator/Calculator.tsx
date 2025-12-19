@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import{ useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calculator as CalculatorIcon, AlertCircle } from "lucide-react";
 
 import { ButtonIcon, Heading } from "@/webcomponent/reusable";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";

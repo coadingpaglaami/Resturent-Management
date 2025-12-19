@@ -10,11 +10,11 @@ export interface InventoryCountData {
   status: "Pending" | "Complete";
   viewTable?: {
     header: string;
-    view: View[];
+    view: ViewInventory[];
   }[];
 }
 
-export interface View {
+export interface ViewInventory {
   productName: string;
   productId: string;
   expected: string;
