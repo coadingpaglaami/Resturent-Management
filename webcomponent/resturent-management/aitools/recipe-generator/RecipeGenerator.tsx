@@ -301,7 +301,7 @@ export const RecipeGenerator = () => {
                   )}
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" variant="primary" className="w-full">
                 Generate Recipe
               </Button>
             </form>

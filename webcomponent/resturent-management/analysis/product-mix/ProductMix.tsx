@@ -93,6 +93,44 @@ export const ProductMix = () => {
 
   const maxNetSales = top5Items[0]?.netSales || 1;
 
+  const statsCards = [
+    {
+      key: "gross",
+      label: "Total Gross Sales",
+      value: `$${totals.grossSales.toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+      })}`,
+      icon: DollarSign,
+      iconClass: "dark:text-green-500",
+    },
+    {
+      key: "net",
+      label: "Total Net Sales",
+      value: `$${totals.netSales.toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+      })}`,
+      subValue: "8.5%",
+      subIcon: ArrowUpIcon,
+      subClass: "dark:text-green-500",
+      icon: DollarSign,
+      iconClass: "dark:text-green-500",
+    },
+    {
+      key: "qty",
+      label: "Total Quantity Sold",
+      value: totals.qtySold,
+      icon: ShoppingCart,
+      iconClass: "dark:text-blue-500",
+    },
+    {
+      key: "avg",
+      label: "Average Check",
+      value: `$${totals.avgCheck.toFixed(2)}`,
+      icon: DollarSign,
+      iconClass: "dark:text-purple-500",
+    },
+  ];
+
   return (
     <div className=" dark:text-gray-100 py-16 flex flex-col gap-8 px-4 md:px-8">
       {/* Title */}
@@ -180,76 +218,40 @@ export const ProductMix = () => {
 
       {/* KPI Cards */}
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="dark:bg-gray-900 dark:dark:dark:border-gray-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm dark:text-gray-400">Total Gross Sales</p>
-                <p className="text-2xl font-bold mt-2">
-                  $
-                  {totals.grossSales.toLocaleString(undefined, {
-                    minimumFractionDigits: 0,
-                  })}
-                </p>
-              </div>
-              <DollarSign className="h-10 w-10 dark:text-green-500 opacity-80" />
-            </div>
-          </CardContent>
-        </Card>
+        {statsCards.map((card) => {
+          const Icon = card.icon;
+          const SubIcon = card.subIcon;
 
-        <Card className="dark:bg-gray-900 dark:dark:dark:border-gray-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm dark:text-gray-400">Total Net Sales</p>
-                <p className="text-2xl font-bold mt-2">
-                  $
-                  {totals.netSales.toLocaleString(undefined, {
-                    minimumFractionDigits: 0,
-                  })}
-                </p>
-                <div className="flex items-center gap-1 mt-2 dark:text-green-500 text-sm">
-                  <ArrowUpIcon className="h-4 w-4" />
-                  <span>8.5%</span>
+          return (
+            <Card key={card.key}>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm dark:text-gray-400">{card.label}</p>
+
+                    <p className="text-2xl font-bold mt-2">{card.value}</p>
+
+                    {card.subValue && (
+                      <div
+                        className={`flex items-center gap-1 mt-2 text-sm ${card.subClass}`}
+                      >
+                        {SubIcon && <SubIcon className="h-4 w-4" />}
+                        <span>{card.subValue}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <Icon className={`h-10 w-10 opacity-80 ${card.iconClass}`} />
                 </div>
-              </div>
-              <DollarSign className="h-10 w-10 dark:text-green-500 opacity-80" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="dark:bg-gray-900 dark:dark:dark:border-gray-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm dark:text-gray-400">
-                  Total Quantity Sold
-                </p>
-                <p className="text-2xl font-bold mt-2">{totals.qtySold}</p>
-              </div>
-              <ShoppingCart className="h-10 w-10 dark:text-blue-500 opacity-80" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="dark:bg-gray-900 dark:dark:dark:border-gray-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm dark:text-gray-400">Average Check</p>
-                <p className="text-2xl font-bold mt-2">
-                  ${totals.avgCheck.toFixed(2)}
-                </p>
-              </div>
-              <DollarSign className="h-10 w-10 dark:text-purple-500 opacity-80" />
-            </div>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Top 5 Items */}
       <div className=" w-full">
-        <Card className="dark:bg-gray-900 dark:border-gray-800">
+        <Card className="">
           <CardContent className="p-6">
             <h2 className="text-xl font-semibold mb-6">
               Top 5 Items by Net Sales
@@ -284,7 +286,7 @@ export const ProductMix = () => {
 
       {/* Product Mix Details Table */}
       <div className=" w-full">
-        <Card className="dark:bg-gray-900 dark:dark:border-gray-800">
+        <Card className="">
           <CardContent className="p-6">
             <h2 className="text-xl font-semibold mb-6">Product Mix Details</h2>
             <div className="overflow-x-auto">

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { Heading } from "@/webcomponent/reusable";
 import { priceChangeData } from "./Data";
 import {
@@ -88,6 +88,42 @@ export const PriceChanges = () => {
     const sign = value > 0 ? "+" : value < 0 ? "-" : "";
     return `${sign}${abs}%`;
   };
+  const summaryCards = [
+    {
+      key: "total",
+      label: "Total Changes (30 days)",
+      value: summary.totalChanges,
+      className: "text-3xl font-bold mt-2",
+    },
+    {
+      key: "increase",
+      label: "Price Increases",
+      value: summary.increases,
+      className: "text-3xl font-bold text-green-600 mt-2 flex items-center gap-2",
+      icon: ArrowUpIcon,
+    },
+    {
+      key: "decrease",
+      label: "Price Decreases",
+      value: summary.decreases,
+      className:
+        "text-3xl font-bold text-red-600 mt-2 flex items-center gap-2",
+      icon: ArrowDownIcon,
+    },
+    {
+      key: "avg",
+      label: "Avg Change",
+      value:
+        summary.avgChange === 0
+          ? "0.0%"
+          : summary.avgChange > 0
+          ? `+${summary.avgChange.toFixed(1)}%`
+          : `${summary.avgChange.toFixed(1)}%`,
+      className: `text-3xl font-bold mt-2 ${
+        summary.avgChange >= 0 ? "text-green-600" : "text-red-600"
+      }`,
+    },
+  ];
 
   return (
     <div className="py-16 flex flex-col gap-8">
@@ -98,43 +134,20 @@ export const PriceChanges = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-4 gap-4">
-        <Card className="p-6 bg-muted/50">
-          <div className="text-sm text-muted-foreground">
-            Total Changes (30 days)
-          </div>
-          <div className="text-3xl font-bold mt-2">{summary.totalChanges}</div>
-        </Card>
+        {summaryCards.map((card) => {
+          const Icon = card.icon;
 
-        <Card className="p-6 bg-muted/50">
-          <div className="text-sm text-muted-foreground">Price Increases</div>
-          <div className="text-3xl font-bold text-red-600 mt-2 flex items-center gap-2">
-            {summary.increases}
-            <ArrowUpIcon className="w-5 h-5" />
-          </div>
-        </Card>
+          return (
+            <Card key={card.key} className="p-6 ">
+              <div className="text-sm text-muted-foreground">{card.label}</div>
 
-        <Card className="p-6 bg-muted/50">
-          <div className="text-sm text-muted-foreground">Price Decreases</div>
-          <div className="text-3xl font-bold text-green-600 mt-2 flex items-center gap-2">
-            {summary.decreases}
-            <ArrowDownIcon className="w-5 h-5" />
-          </div>
-        </Card>
-
-        <Card className="p-6 bg-muted/50">
-          <div className="text-sm text-muted-foreground">Avg Change</div>
-          <div
-            className={`text-3xl font-bold mt-2 ${
-              summary.avgChange >= 0 ? "text-red-600" : "text-green-600"
-            }`}
-          >
-            {summary.avgChange === 0
-              ? "0.0%"
-              : summary.avgChange > 0
-              ? `+${summary.avgChange.toFixed(1)}%`
-              : `${summary.avgChange.toFixed(1)}%`}
-          </div>
-        </Card>
+              <div className={card.className}>
+                {card.value}
+                {Icon && <Icon className="w-5 h-5" />}
+              </div>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Filters */}
@@ -208,7 +221,7 @@ export const PriceChanges = () => {
                     <TableCell>
                       <span
                         className={`font-medium flex items-center gap-1 ${
-                          isIncrease ? "text-red-600" : "text-green-600"
+                          isIncrease ? "text-green-600" : "text-red-600"
                         }`}
                       >
                         {isIncrease ? (

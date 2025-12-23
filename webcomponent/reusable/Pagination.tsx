@@ -29,7 +29,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <div className="flex justify-end mt-2 gap-2 items-center">
+    <div className="flex justify-end my-2 mx-3 gap-2 items-center">
       {/* Prev button */}
       <button
         onClick={() => onPageChange(Math.max(currentPage - 1, 1))}

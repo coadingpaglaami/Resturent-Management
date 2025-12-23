@@ -119,6 +119,35 @@
   --color-button-primary: #4338ca;
   --card-shadow: none;
 }
+@layer components {
+  /* Main card class */
+  .card {
+    @apply rounded-lg p-6 transition-shadow duration-200; /* Tailwind utilities */
+    background-color: var(--card); /* Light/dark mode auto */
+    border: 1px solid var(--border); /* Light/dark mode border */
+    box-shadow: var(--card-shadow); /* Light/dark shadow */
+  }
+
+  /* Optional card text color */
+  .card-text {
+    color: var(--card-foreground);
+  }
+
+  /* Variant examples if you want specific card types */
+  .card-success {
+    @apply rounded-lg p-6;
+    background-color: oklch(0.85 0 120); /* example */
+    border-color: oklch(0.7 0 120);
+    color: oklch(0 0 0);
+  }
+
+  .card-danger {
+    @apply rounded-lg p-6;
+    background-color: oklch(0.95 0.2 40);
+    border-color: oklch(0.8 0.1 40);
+    color: white;
+  }
+}
 .box-shadow-card {
   box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }

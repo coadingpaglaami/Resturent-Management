@@ -34,7 +34,7 @@ export const DaypartAnalysis = () => {
     title: string,
     items: typeof topLunchItems
   ) => (
-    <Card className="bg-muted/50 border-0">
+    <Card>
       <CardHeader>
         <CardTitle className="text-lg">{title}</CardTitle>
       </CardHeader>
@@ -66,7 +66,7 @@ export const DaypartAnalysis = () => {
       {/* Summary Cards - Breakfast, Lunch, Dinner, Late Night */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {daypartSales.map((daypart) => (
-          <Card key={daypart.daypart} className="bg-muted/50 border-0">
+          <Card key={daypart.daypart} className="">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg font-medium">
                 {daypart.daypart}
@@ -89,7 +89,7 @@ export const DaypartAnalysis = () => {
       </div>
 
       {/* Sales by Daypart Chart */}
-      <Card className="bg-muted/50 border-0">
+      <Card className="">
         <CardHeader>
           <CardTitle>Sales by Daypart</CardTitle>
         </CardHeader>

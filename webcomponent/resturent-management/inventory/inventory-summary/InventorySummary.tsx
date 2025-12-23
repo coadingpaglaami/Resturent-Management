@@ -68,6 +68,42 @@ export const InventorySummary = () => {
     const formatted = value.toFixed(2);
     return value >= 0 ? `+${formatted}%` : `${formatted}%`;
   };
+  const summaryCards = [
+    {
+      key: "status",
+      label: "Status",
+      type: "badge",
+      value: selectedData.status,
+      badgeVariant:
+        selectedData.status === "Completed"
+          ? "green"
+          : selectedData.status === "In Progress"
+          ? "secondary"
+          : "outline",
+    },
+    {
+      key: "expected",
+      label: "Expected Value",
+      type: "value",
+      value: formatCurrency(totalExpected),
+    },
+    {
+      key: "counted",
+      label: "Counted Value",
+      type: "value",
+      value: formatCurrency(totalCounted),
+    },
+    {
+      key: "variance",
+      label: "Variance",
+      type: "variance",
+      value: totalVariance,
+      formattedValue: formatCurrency(totalVariance),
+      percentage: formatPercentage(totalVariancePercentage),
+      bgClass: getVarianceBg(totalVariance),
+      textClass: getVarianceColor(totalVariance),
+    },
+  ];
 
   return (
     <div className="py-16 flex flex-col gap-8">
@@ -103,70 +139,58 @@ export const InventorySummary = () => {
 
       {/* Summary Cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="dark:bg-muted/40 border-muted">
-          <CardContent className="pt-6">
-            <div className="flex flex-col gap-1">
-              <p className="text-sm text-muted-foreground">Status</p>
-              <Badge
-                variant={
-                  selectedData.status === "Completed"
-                    ? "green"
-                    : selectedData.status === "In Progress"
-                    ? "secondary"
-                    : "outline"
-                }
-                className="w-fit mt-1"
-              >
-                {selectedData.status}
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
+        {summaryCards.map((card) => (
+          <Card
+            key={card.key}
+            className={
+              card.type === "variance"
+                ? `border ${card.bgClass}`
+                : ""
+            }
+          >
+            <CardContent className="pt-6">
+              <div className="flex flex-col gap-1">
+                <p className="text-sm text-muted-foreground">{card.label}</p>
 
-        <Card className="dark:bg-muted/40 border-muted">
-          <CardContent className="pt-6">
-            <div className="flex flex-col gap-1">
-              <p className="text-sm text-muted-foreground">Expected Value</p>
-              <p className="text-2xl font-semibold">
-                {formatCurrency(totalExpected)}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+                {/* STATUS */}
+                {card.type === "badge" && (
+                  <Badge
+                    variant={
+                      card.badgeVariant as
+                        | "green"
+                        | "secondary"
+                        | "outline"
+                        | "default"
+                    }
+                    className="w-fit mt-1"
+                  >
+                    {card.value}
+                  </Badge>
+                )}
 
-        <Card className="dark:bg-muted/40 border-muted">
-          <CardContent className="pt-6">
-            <div className="flex flex-col gap-1">
-              <p className="text-sm text-muted-foreground">Counted Value</p>
-              <p className="text-2xl font-semibold">
-                {formatCurrency(totalCounted)}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+                {/* NORMAL VALUE */}
+                {card.type === "value" && (
+                  <p className="text-2xl font-semibold">{card.value}</p>
+                )}
 
-        <Card className={`border ${getVarianceBg(totalVariance)}`}>
-          <CardContent className="pt-6">
-            <div className="flex flex-col gap-1">
-              <p className="text-sm text-muted-foreground">Variance</p>
-              <p
-                className={`text-2xl font-bold ${getVarianceColor(
-                  totalVariance
-                )}`}
-              >
-                {totalVariance >= 0 ? "+" : ""}
-                {formatCurrency(totalVariance)}
-              </p>
-              <p
-                className={`text-sm font-medium ${getVarianceColor(
-                  totalVariance
-                )}`}
-              >
-                {formatPercentage(totalVariancePercentage)}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+                {/* VARIANCE */}
+                {card.type === "variance" && (
+                  <>
+                    <p className={`text-2xl font-bold ${card.textClass}`}>
+                      {typeof card.value === "number" && card.value >= 0
+                        ? "+"
+                        : ""}
+                      {card.formattedValue}
+                    </p>
+                    <p className={`text-sm font-medium ${card.textClass}`}>
+                      {card.percentage}
+                    </p>
+                  </>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Table Section */}

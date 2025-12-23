@@ -1,8 +1,8 @@
 "use client";
 
-import{ useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calculator as CalculatorIcon, AlertCircle } from "lucide-react";
+import { Calculator as CalculatorIcon } from "lucide-react";
 
 import { ButtonIcon, Heading } from "@/webcomponent/reusable";
 import { Input } from "@/components/ui/input";
@@ -26,7 +26,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Checkbox } from "@/components/ui/checkbox";
+
 
 interface Ingredient {
   name: string;
@@ -210,19 +210,34 @@ export const Calculator = () => {
               Select ingredients for expected usage
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {initialIngredients.map((ing) => (
-              <div key={ing.name} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`exp-${ing.name}`}
-                  checked={selectedExpected.includes(ing.name)}
-                  onCheckedChange={() => toggleExpected(ing.name)}
-                />
-                <Label htmlFor={`exp-${ing.name}`}>
-                  {ing.name} - {ing.expectedQty} {ing.unit}
-                </Label>
-              </div>
-            ))}
+
+          <CardContent className="space-y-2">
+            {initialIngredients.map((ing) => {
+              const isSelected = selectedExpected.includes(ing.name);
+
+              return (
+                <div
+                  key={ing.name}
+                  onClick={() => {
+                    toggleExpected(ing.name);
+                    toggleActual(ing.name); // 🔁 auto-sync
+                  }}
+                  className={`
+            cursor-pointer rounded-lg border px-4 py-3 transition-colors flex items-center gap-2
+            ${
+              isSelected
+                ? "bg-black text-white dark:bg-white dark:text-black"
+                : "bg-transparent hover:bg-muted"
+            }
+          `}
+                >
+                  <p className="text-sm font-medium">{ing.name}</p>
+                  <p className="text-xs opacity-80">
+                    {ing.expectedQty} {ing.unit}
+                  </p>
+                </div>
+              );
+            })}
           </CardContent>
         </Card>
 
@@ -234,26 +249,38 @@ export const Calculator = () => {
               Select ingredients for actual usage
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {initialIngredients.map((ing) => (
-              <div key={ing.name} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`act-${ing.name}`}
-                  checked={selectedActual.includes(ing.name)}
-                  onCheckedChange={() => toggleActual(ing.name)}
-                />
-                <Label htmlFor={`act-${ing.name}`}>
-                  {ing.name} - {ing.actualQty} {ing.unit}
-                </Label>
-              </div>
-            ))}
+
+          <CardContent className="space-y-2">
+            {initialIngredients.map((ing) => {
+              const isSelected = selectedActual.includes(ing.name);
+
+              return (
+                <div
+                  key={ing.name}
+                  onClick={() => toggleActual(ing.name)}
+                  className={`
+            cursor-pointer rounded-lg border px-4 py-3 transition-colors flex items-center gap-2
+            ${
+              isSelected
+                ? "bg-black text-white dark:bg-white dark:text-black"
+                : "bg-transparent hover:bg-muted"
+            }
+          `}
+                >
+                  <p className="text-sm font-medium">{ing.name}</p>
+                  <p className="text-xs opacity-80">
+                    {ing.actualQty} {ing.unit}
+                  </p>
+                </div>
+              );
+            })}
           </CardContent>
         </Card>
       </div>
 
       {/* Controls */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div>
+        <div className="flex flex-col gap-2">
           <Label htmlFor="analysis-name">Analysis Name</Label>
           <Input
             id="analysis-name"
@@ -263,7 +290,7 @@ export const Calculator = () => {
           />
         </div>
 
-        <div>
+        <div className="flex flex-col gap-2">
           <Label htmlFor="time-period">Time Period</Label>
           <Input
             id="time-period"
@@ -273,7 +300,7 @@ export const Calculator = () => {
           />
         </div>
 
-        <div>
+        <div className="flex flex-col gap-2">
           <Label>High Variance Threshold (%)</Label>
           <div className="flex items-center gap-4 mt-2">
             <Slider
@@ -318,7 +345,6 @@ export const Calculator = () => {
               transition={{ delay: 0.2, duration: 0.3 }}
             >
               <Alert variant={results.isOverBudget ? "destructive" : "default"}>
-                <AlertCircle className="h-4 w-4" />
                 <AlertTitle>
                   {results.isOverBudget
                     ? "Overall over budget – actual costs higher than expected"

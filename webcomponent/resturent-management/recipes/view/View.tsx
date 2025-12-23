@@ -189,7 +189,7 @@ export const View = () => {
                     >
                       {/* Ingredients Table */}
                       <h4 className="text-lg font-medium mb-4">Ingredients</h4>
-                      <Table className="dark:bg-black ">
+                      <Table className="dark:bg-black rounded-md">
                         <TableHeader>
                           <TableRow>
                             <TableHead>Ingredient</TableHead>
@@ -218,7 +218,7 @@ export const View = () => {
                       <h4 className="text-lg font-medium mt-8 mb-4">
                         Cooking Instructions
                       </h4>
-                      <ol className="list-decimal list-inside space-y-2 dark:bg-black p-3.5">
+                      <ol className="list-decimal list-inside space-y-2 dark:bg-black p-3.5 rounded-md">
                         {recipe.instructions.map((step, idx) => (
                           <motion.li
                             key={idx}

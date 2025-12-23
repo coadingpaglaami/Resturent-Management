@@ -100,11 +100,9 @@ export const CategoryPerfomance = () => {
       {/* Top Section: Pie Chart + Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Sales by Category - Pie Chart */}
-        <Card className="bg-white dark:bg-gray-900/70 border-gray-200 dark:border-gray-800">
+        <Card className="">
           <CardContent className="p-8">
-            <h2 className="text-xl font-semibold mb-8 text-gray-900 dark:text-gray-100">
-              Sales by Category
-            </h2>
+            <h2 className="text-xl font-semibold mb-8 ">Sales by Category</h2>
             <ResponsiveContainer width="100%" height={380}>
               <PieChart>
                 <Pie
@@ -126,7 +124,6 @@ export const CategoryPerfomance = () => {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#1f2937",
                     border: "none",
                     borderRadius: "8px",
                   }}
@@ -143,7 +140,7 @@ export const CategoryPerfomance = () => {
         </Card>
 
         {/* Category Summary */}
-        <Card className="bg-white dark:bg-gray-900/70 border-gray-200 dark:border-gray-800">
+        <Card className="">
           <CardContent className="p-8">
             <h2 className="text-xl font-semibold mb-8 text-gray-900 dark:text-gray-100">
               Category Summary
@@ -191,7 +188,7 @@ export const CategoryPerfomance = () => {
 
       {/* Bottom Section: Category Performance Details Table */}
       <div>
-        <Card className="bg-white dark:bg-gray-900/70 border-gray-200 dark:border-gray-800">
+        <Card className="b">
           <CardContent className="p-8">
             <h2 className="text-xl font-semibold mb-8 text-gray-900 dark:text-gray-100">
               Category Performance Details

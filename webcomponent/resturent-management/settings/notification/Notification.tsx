@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import {  CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
 type NotificationPreference = {
@@ -76,7 +76,7 @@ export const Notification=()=>{
                   id={pref.id}
                   checked={pref.checked}
                   onCheckedChange={() => togglePreference(pref.id)}
-                  className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 dark:data-[state=checked]:bg-white dark:data-[state=checked]:border-white border-2 bg-transparent w-5 h-5 rounded"
+                  className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 dark:data-[state=checked]:bg-transparent dark:data-[state=checked]:border-gray-300 border-2 dbg-transparent w-5 h-5 rounded"
                 />
               </div>
 

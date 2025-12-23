@@ -25,6 +25,39 @@ export const DiscountsVoids = () => {
     const abs = Math.abs(value).toFixed(2);
     return value < 0 ? `-$${abs}` : `$${abs}`;
   };
+  const discountsCards = [
+    {
+      key: "discounts",
+      label: "Total Discounts",
+      value: `$${totalDiscounts.toFixed(2)}`,
+      icon: AlertTriangle,
+      iconClass: "text-yellow-500",
+      valueClass: "text-3xl font-bold text-yellow-500",
+    },
+    {
+      key: "voids",
+      label: "Total Voids",
+      value: totalVoids,
+      icon: XCircle,
+      iconClass: "text-red-500",
+      valueClass: "text-3xl font-bold text-red-500",
+    },
+    {
+      key: "comps",
+      label: "Total Comps",
+      value: totalComps,
+      icon: Gift,
+      iconClass: "text-green-500",
+      valueClass: "text-3xl font-bold text-green-500",
+    },
+    {
+      key: "impact",
+      label: "Total Impact",
+      value: formatCurrency(totalImpact),
+      icon: null, // no icon
+      valueClass: "text-3xl font-bold text-red-500",
+    },
+  ];
 
   return (
     <div className="py-16 flex flex-col gap-8">
@@ -35,66 +68,26 @@ export const DiscountsVoids = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Total Discounts */}
-        <Card className="bg-muted/50 border-0">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-yellow-500" />
-              Total Discounts
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-yellow-500">
-              ${totalDiscounts.toFixed(2)}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Total Voids */}
-        <Card className="bg-muted/50 border-0">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <XCircle className="h-5 w-5 text-red-500" />
-              Total Voids
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-red-500">{totalVoids}</div>
-          </CardContent>
-        </Card>
-
-        {/* Total Comps */}
-        <Card className="bg-muted/50 border-0">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Gift className="h-5 w-5 text-green-500" />
-              Total Comps
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-green-500">
-              {totalComps}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Total Impact */}
-        <Card className="bg-muted/50 border-0">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Impact
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-red-500">
-              {formatCurrency(totalImpact)}
-            </div>
-          </CardContent>
-        </Card>
+        {discountsCards.map((card) => {
+          const Icon = card.icon;
+          return (
+            <Card key={card.key} className="card">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  {Icon && <Icon className={`h-5 w-5 ${card.iconClass}`} />}
+                  {card.label}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className={card.valueClass}>{card.value}</div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Items Table */}
-      <Card className="bg-muted/50 border-0">
+      <Card className="">
         <CardHeader>
           <CardTitle>Items with Discounts/Voids</CardTitle>
         </CardHeader>

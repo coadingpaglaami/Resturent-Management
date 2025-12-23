@@ -26,7 +26,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-
 const categories = ["Main Course", "Appetizer", "Dessert", "Beverage"];
 const units = ["g", "kg", "lb", "oz", "ml", "l", "tsp", "tbsp", "cup", "piece"];
 const ingredients = [
@@ -68,6 +67,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export const Builder = () => {
+  
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -124,7 +124,7 @@ export const Builder = () => {
         >
           <div className="space-y-6 ">
             <Header title="Recipe Information">
-              <div>
+            
                 <div className="space-y-6">
                   <div className="flex md:flex-row gap-3.5">
                     <div className="md:w-[70%] flex flex-col gap-3.5">
@@ -169,7 +169,7 @@ export const Builder = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
-                              <div className="relative w-full h-full min-h-48 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/30 flex items-center justify-center overflow-hidden">
+                              <div className="relative w-full h-full min-h-48 max-h-72 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/30 flex items-center justify-center overflow-hidden">
                                 {field.value ? (
                                   <div className="relative w-full h-full">
                                     <img
@@ -301,7 +301,7 @@ export const Builder = () => {
                     />
                   </div>
                 </div>
-              </div>
+              
             </Header>
           </div>
 

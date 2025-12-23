@@ -16,27 +16,28 @@ const initialIntegrations: Integration[] = [
   {
     name: "Square POS",
     status: "Connected",
-    logoUrl: "/settings/square.svg",
+    logoUrl: "🟦",
   },
   {
     name: "Toast POS",
     status: "Disconnected",
-    logoUrl: "/settings/package.svg",
+    logoUrl: "🍞",
   },
   {
     name: "QuickBooks",
     status: "Disconnected",
-    logoUrl: "/settings/love.svg",
+    logoUrl: "💚",
   },
   {
     name: "Clover",
     status: "Disconnected",
-    logoUrl: "/settings/clover.svg",
+    logoUrl: "🍀",
   },
 ];
 
-export const Integration=()=>{
-const [integrations, setIntegrations] = useState<Integration[]>(initialIntegrations);
+export const Integration = () => {
+  const [integrations, setIntegrations] =
+    useState<Integration[]>(initialIntegrations);
 
   const toggleConnection = (name: string) => {
     setIntegrations((prev) =>
@@ -44,7 +45,8 @@ const [integrations, setIntegrations] = useState<Integration[]>(initialIntegrati
         item.name === name
           ? {
               ...item,
-              status: item.status === "Connected" ? "Disconnected" : "Connected",
+              status:
+                item.status === "Connected" ? "Disconnected" : "Connected",
             }
           : item
       )
@@ -61,23 +63,10 @@ const [integrations, setIntegrations] = useState<Integration[]>(initialIntegrati
             <CardContent className="p-0">
               <div className="flex items-center justify-between p-6">
                 <div className="flex items-center gap-4">
-                  <Image
-                    src={integration.logoUrl}
-                    alt={`${integration.name} logo`}
-                    height={40}
-                    width={40}
-                    className="w-10 h-10 rounded-md object-contain"
-                   
-                  />
+                 
                   {/* Fallback emoji if image fails */}
-                  <span className="hidden text-3xl">
-                    {integration.name === "Square POS"
-                      ? "▪️"
-                      : integration.name === "Toast POS"
-                      ? "🥪"
-                      : integration.name === "QuickBooks"
-                      ? "💚"
-                      : "🍀"}
+                  <span className=" text-3xl">
+                    {integration.logoUrl}
                   </span>
 
                   <div>
@@ -87,7 +76,7 @@ const [integrations, setIntegrations] = useState<Integration[]>(initialIntegrati
                       className={
                         integration.status === "Connected"
                           ? "bg-green-900 text-green-100"
-                          : "text-muted-foreground"
+                          : "text-white"
                       }
                     >
                       {integration.status}
@@ -96,10 +85,16 @@ const [integrations, setIntegrations] = useState<Integration[]>(initialIntegrati
                 </div>
 
                 <Button
-                  variant={integration.status === "Connected" ? "destructive" : "default"}
+                  variant={
+                    integration.status === "Connected"
+                      ? "destructive"
+                      : "default"
+                  }
                   onClick={() => toggleConnection(integration.name)}
                 >
-                  {integration.status === "Connected" ? "Disconnect" : "Connect"}
+                  {integration.status === "Connected"
+                    ? "Disconnect"
+                    : "Connect"}
                 </Button>
               </div>
             </CardContent>
@@ -107,5 +102,5 @@ const [integrations, setIntegrations] = useState<Integration[]>(initialIntegrati
         ))}
       </div>
     </div>
-    )
-}
+  );
+};

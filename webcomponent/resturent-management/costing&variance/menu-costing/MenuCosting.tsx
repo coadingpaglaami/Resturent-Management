@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Heading } from "@/webcomponent/reusable";
 import { recipieCostingDataArray } from "./Data";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -25,7 +24,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface MenuItem {
@@ -213,7 +211,7 @@ export const MenuCosting = () => {
                     >
                       <TableCell className="font-medium">{item.name}</TableCell>
                       <TableCell>
-                        <Badge variant="secondary">{item.category}</Badge>
+                        <Badge variant="default" className="bg-gray-300 text-black">{item.category}</Badge>
                       </TableCell>
                       <TableCell>${item.costorportion.toFixed(2)}</TableCell>
                       <TableCell>${item.sellingPrice.toFixed(2)}</TableCell>

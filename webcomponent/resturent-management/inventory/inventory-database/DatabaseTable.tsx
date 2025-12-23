@@ -48,7 +48,7 @@ export const DataBaseTable = ({
 
 
   return (
-    <div className="mt-4 overflow-auto border rounded-md">
+    <div className="mt-4 overflow-auto border rounded-md dark:bg-[#1D293D] box-shadow-card dark:border-[#314158] ">
       <Table className="">
         <TableHeader className="bg-transparent">
           <TableRow>

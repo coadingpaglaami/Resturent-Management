@@ -116,7 +116,7 @@ export const MenuEngineering = () => {
       </div>
 
       {/* Menu Engineering Matrix Table */}
-      <Card className="bg-muted/50 border-0">
+      <Card className="">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Table>

@@ -38,6 +38,37 @@ const chartData = salesVsLaborChartData.dates.map((date, index) => ({
   netSales: salesVsLaborChartData.netSales[index],
 }));
 
+const laborSalesCards = [
+  {
+    key: "laborHours",
+    label: "Total Labor Hours",
+    value: totalLaborHours,
+    icon: Clock,
+    iconClass: "dark:text-blue-500",
+    valueClass: "text-3xl font-bold mt-2",
+    cardClass: "", // default card background
+  },
+  {
+    key: "netSales",
+    label: "Total Net Sales",
+    value: `$${totalNetSales.toLocaleString()}`,
+    icon: DollarSign,
+    iconClass: "dark:text-green-500",
+    valueClass: "text-3xl font-bold mt-2",
+    cardClass: "",
+  },
+  {
+    key: "avgSalesHour",
+    label: "Avg Sales per Hour",
+    value: `$${avgSalesPerHour.toFixed(2)}`,
+    icon: TrendingUp,
+    iconClass: "dark:text-emerald-400 opacity-90",
+    valueClass: "text-3xl font-bold mt-2 dark:text-emerald-400",
+    cardClass:
+      "dark:bg-gray-900/70 dark:border-gray-800 ring-2 dark:ring-emerald-500/30",
+  },
+]
+
 export const LabourProductivity = () => {
   return (
     <div className="py-16 flex flex-col gap-6">
@@ -45,51 +76,29 @@ export const LabourProductivity = () => {
         title="Labor & Productivity"
         subtitle="Track labor efficiency and sales productivity"
       />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="dark:bg-gray-900/70 dark:border-gray-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm dark:text-gray-400">Total Labor Hours</p>
-                <p className="text-3xl font-bold mt-2">{totalLaborHours}</p>
-              </div>
-              <Clock className="h-10 w-10 dark:text-blue-500 opacity-80" />
+ <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+  {laborSalesCards.map((card) => {
+    const Icon = card.icon
+    return (
+      <Card key={card.key} className={`card ${card.cardClass}`}>
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm dark:text-gray-400">{card.label}</p>
+              <p className={card.valueClass}>{card.value}</p>
             </div>
-          </CardContent>
-        </Card>
+            {Icon && <Icon className={`h-10 w-10 ${card.iconClass} opacity-80`} />}
+          </div>
+        </CardContent>
+      </Card>
+    )
+  })}
+</div>
 
-        <Card className="dark:bg-gray-900/70 dark:border-gray-800">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm dark:text-gray-400">Total Net Sales</p>
-                <p className="text-3xl font-bold mt-2">
-                  ${totalNetSales.toLocaleString()}
-                </p>
-              </div>
-              <DollarSign className="h-10 w-10 dark:text-green-500 opacity-80" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="dark:bg-gray-900/70 dark:border-gray-800 ring-2 dark:ring-emerald-500/30">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm dark:text-gray-400">Avg Sales per Hour</p>
-                <p className="text-3xl font-bold mt-2 dark:text-emerald-400">
-                  ${avgSalesPerHour.toFixed(2)}
-                </p>
-              </div>
-              <TrendingUp className="h-10 w-10 dark:text-emerald-400 opacity-90" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Sales vs Labor Hours Over Time - Line Chart */}
       <div>
-        <Card className="dark:bg-gray-900/70 dark:border-gray-800">
+        <Card className="">
           <CardContent className="p-8">
             <h2 className="text-xl font-semibold mb-8">
               Sales vs Labor Hours Over Time
@@ -178,7 +187,7 @@ export const LabourProductivity = () => {
 
       {/* Daily Labor Productivity Table */}
       <div>
-        <Card className="dark:bg-gray-900/70 dark:border-gray-800">
+        <Card className="">
           <CardContent className="p-8">
             <h2 className="text-xl font-semibold mb-8">
               Daily Labor Productivity
