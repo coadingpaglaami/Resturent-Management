@@ -46,6 +46,7 @@ export const UserAndRoles=()=>{
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogMode, setDialogMode] = useState<"invite" | "edit">("invite");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  console.log(selectedUser);
 
   // Form state for dialog
   const [formEmail, setFormEmail] = useState("");

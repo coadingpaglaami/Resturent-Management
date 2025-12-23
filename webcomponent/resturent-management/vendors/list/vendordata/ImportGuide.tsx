@@ -100,7 +100,6 @@ export const orderGuideArray: orderGuideItems[] = [
   },
 ];
 export const ImportGuide = ({
-  open,
   onClose,
   onAddItems,
   existingSkus,

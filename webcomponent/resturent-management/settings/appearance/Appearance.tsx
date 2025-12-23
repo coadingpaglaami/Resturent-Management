@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
+import {  CardContent } from "@/components/ui/card";
 import { useTheme } from "next-themes";
 export const Appearance=()=>{
     const { theme, setTheme } = useTheme();

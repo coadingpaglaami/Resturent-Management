@@ -7,7 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { useRef, useState } from "react";
 import { ButtonIcon } from "@/webcomponent/reusable";
 

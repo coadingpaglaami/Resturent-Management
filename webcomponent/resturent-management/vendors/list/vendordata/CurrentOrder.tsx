@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +33,7 @@ export const CurrentOrder = ({
   setWeeklyBudget
 }: CurrentOrderProps) => {
 
-  const [budget, setBudget] = useState(weeklyBudget);
+
 
 const handleQuantityChange = (sku: string, delta: number) => {
   const updated = data.map((item) =>
