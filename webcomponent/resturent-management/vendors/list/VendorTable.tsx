@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Eye, Upload } from "lucide-react";
+import { Eye, ShoppingCart, Upload } from "lucide-react";
 import { Vendor } from "./Data";
 import { ButtonIcon } from "@/webcomponent/reusable";
 import { useRouter } from "next/navigation";
@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 export const VendorsTable = ({ vendors }: { vendors: Vendor[] }) => {
   const router = useRouter();
   return (
-    <div className="dark:rounded-md dark:border dark:border-slate-800 dark:bg-slate-900">
+    <div className="dark:rounded-md dark:border dark:border-[#314158] dark:bg-[#1D293D]">
       <Table>
         <TableHeader>
           <TableRow className="dark:border-b dark:border-slate-800 dark:hover:bg-transparent">
@@ -68,8 +68,16 @@ export const VendorsTable = ({ vendors }: { vendors: Vendor[] }) => {
                   <ButtonIcon
                     icon={<Upload className="h-4 w-4" />}
                     varient="primary"
+                    className="bg-green-600 text-white hover:bg-green-700"
                   >
                     Import
+                  </ButtonIcon>
+                  <ButtonIcon
+                    icon={<ShoppingCart className="h-4 w-4" />}
+                    varient="primary"
+                    className=""
+                  >
+                    Order
                   </ButtonIcon>
                 </div>
               </TableCell>

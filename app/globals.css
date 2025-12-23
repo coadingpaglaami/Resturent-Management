@@ -80,12 +80,14 @@
   --sidebar-ring: oklch(0.708 0 0);
   --box-shadow-card: .box-shadow-card;
   --color-button-primary: #3c26d3;
+  --card-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.1),
+    0 1px 3px 0px rgba(0, 0, 0, 0.1);
 }
 
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: oklch(0.253 0.04 252.12);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
@@ -115,6 +117,7 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
   --color-button-primary: #4338ca;
+  --card-shadow: none;
 }
 .box-shadow-card {
   box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.1);

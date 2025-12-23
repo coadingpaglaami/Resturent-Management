@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 interface ButtonIconProps {
   icon: React.ReactNode;
   children: React.ReactNode;
@@ -6,6 +7,7 @@ interface ButtonIconProps {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
+  className?: string;
 }
 
 export const ButtonIcon = ({
@@ -14,12 +16,16 @@ export const ButtonIcon = ({
   varient,
   onClick,
   type = "button",
-  disabled
+  disabled,
+  className,
 }: ButtonIconProps) => {
   return (
     <Button
       variant={varient != undefined ? varient : "primary"}
-      className="flex items-center gap-3.5"
+      className={cn(
+        "flex items-center gap-3.5",
+        className // ✅ override here
+      )}
       onClick={onClick}
       type={type}
       disabled={disabled}

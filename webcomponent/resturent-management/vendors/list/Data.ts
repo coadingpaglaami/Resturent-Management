@@ -16,6 +16,7 @@ export interface orderGuideItems {
   costPerUnit: number;
   linkedIngredient: string;
   lastUpdated: string;
+  category?: string;
 }
 export interface priceHistory {
   productName: string;

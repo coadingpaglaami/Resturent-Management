@@ -110,7 +110,7 @@ export const InventorySummary = () => {
               <Badge
                 variant={
                   selectedData.status === "Completed"
-                    ? "default"
+                    ? "green"
                     : selectedData.status === "In Progress"
                     ? "secondary"
                     : "outline"

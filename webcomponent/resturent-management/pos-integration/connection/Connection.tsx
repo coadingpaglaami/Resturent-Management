@@ -26,7 +26,7 @@ export const Connection = () => {
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-4">
                 <div className="bg-orange-500/20 p-3 rounded-lg">
-                  <div className="w-8 h-8 bg-orange-500 rounded" />{" "}
+                  <div className="md:text-4xl">🍞</div>
                   {/* Toast logo placeholder */}
                 </div>
                 <div>
@@ -75,7 +75,7 @@ export const Connection = () => {
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-4">
                 <div className="dark:bg-gray-600/20 p-3 rounded-lg">
-                  <div className="w-8 h-8 bg-gray-400 rounded" />{" "}
+                  <div className="md:text-4xl">🟨</div>
                   {/* Square logo placeholder */}
                 </div>
                 <div>
@@ -107,11 +107,11 @@ export const Connection = () => {
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-4">
                 <div className="dark:bg-green-600/20 p-3 rounded-lg">
-                  <div className="w-8 h-8 bg-green-500 rounded-full" />{" "}
+                  <div className="md:text-4xl">🍀</div>
                   {/* Clover logo placeholder */}
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold">Clover</h3>
+                  <h3 className="text-lg font-semibold grow">Clover</h3>
                   <Badge
                     variant="secondary"
                     className="mt-1 bg-gray-600/20 text-gray-400 border-gray-600/30"
