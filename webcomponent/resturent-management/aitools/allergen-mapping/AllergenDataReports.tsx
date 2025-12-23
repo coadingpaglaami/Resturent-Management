@@ -1,6 +1,6 @@
 "use client";
 
-import { recipeDetails, type RecipeDetails } from "./Data";
+import { recipeDetails } from "./Data";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
