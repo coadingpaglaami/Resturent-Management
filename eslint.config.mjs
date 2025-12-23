@@ -30,15 +30,21 @@ const eslintConfig = defineConfig([
       "unused-imports": unusedImports,
     },
     rules: {
-      // Show warnings (NOT errors)
-      "no-unused-vars": "warn",
+      /**
+       * Disable base + TS unused rules
+       * (they cause duplicates)
+       */
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "off",
 
-      // Better unused import detection
-      "unused-imports/no-unused-imports": "warn",
+      /**
+       * Single source of truth for unused detection
+       * ❌ ERROR = blocks push
+       */
+      "unused-imports/no-unused-imports": "error",
 
-      // Optional: warn but ignore args starting with _
       "unused-imports/no-unused-vars": [
-        "warn",
+        "error",
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
