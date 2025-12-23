@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Plus, Save, Trash2, Upload } from "lucide-react";
@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Image from "next/image";
 
 const categories = ["Main Course", "Appetizer", "Dessert", "Beverage"];
 const units = ["g", "kg", "lb", "oz", "ml", "l", "tsp", "tbsp", "cup", "piece"];
@@ -67,7 +68,6 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export const Builder = () => {
-  
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -88,9 +88,14 @@ export const Builder = () => {
     name: "ingredients",
   });
 
-  const watchedIngredients = form.watch(
-    "ingredients"
-  ) as FormValues["ingredients"];
+  // const watchedIngredients = form.watch(
+  //   "ingredients"
+  // ) as FormValues["ingredients"];
+
+  const watchedIngredients = useWatch({
+    control: form.control,
+    name: "ingredients",
+  }) as FormValues["ingredients"];
   const totalCost = watchedIngredients.reduce((sum, ing) => {
     const mockCosts: Record<string, number> = {
       "1": 0.01,
@@ -124,176 +129,104 @@ export const Builder = () => {
         >
           <div className="space-y-6 ">
             <Header title="Recipe Information">
-            
-                <div className="space-y-6">
-                  <div className="flex md:flex-row gap-3.5">
-                    <div className="md:w-[70%] flex flex-col gap-3.5">
-                      <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Recipe Name *</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="e.g. Grilled Salmon with Herb Butter"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+              <div className="space-y-6">
+                <div className="flex md:flex-row gap-3.5">
+                  <div className="md:w-[70%] flex flex-col gap-3.5">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Recipe Name *</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="e.g. Grilled Salmon with Herb Butter"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                      <FormField
-                        control={form.control}
-                        name="description"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Description</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                placeholder="Brief description of the recipe"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <div className="flex items-center justify-center md:w-[30%]">
-                      <FormField
-                        control={form.control}
-                        name="image"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <div className="relative w-full h-full min-h-48 max-h-72 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/30 flex items-center justify-center overflow-hidden">
-                                {field.value ? (
-                                  <div className="relative w-full h-full">
-                                    <img
-                                      src={URL.createObjectURL(field.value)}
-                                      alt="Recipe preview"
-                                      className="w-full h-full object-cover"
-                                    />
-                                    <Button
-                                      type="button"
-                                      variant="destructive"
-                                      size="icon"
-                                      className="absolute top-2 right-2"
-                                      onClick={() => field.onChange(null)}
-                                    >
-                                      <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                  </div>
-                                ) : (
-                                  <label
-                                    htmlFor="recipe-image-upload"
-                                    className="flex flex-col items-center gap-4 cursor-pointer p-8 text-center"
-                                  >
-                                    <div className="flex items-center justify-center rounded-full bg-muted/50">
-                                      <Upload className="h-8 w-8 text-muted-foreground" />
-                                    </div>
-                                    <div className="space-y-1">
-                                      <p className="text-sm font-medium">
-                                        Upload your Recipe Photo
-                                      </p>
-                                      <p className="text-xs text-muted-foreground">
-                                        Drag and drop or click to upload
-                                      </p>
-                                      <p className="text-xs text-muted-foreground">
-                                        (Max 5MB, JPG/PNG)
-                                      </p>
-                                    </div>
-                                  </label>
-                                )}
-                                <input
-                                  id="recipe-image-upload"
-                                  type="file"
-                                  accept="image/*"
-                                  className="hidden"
-                                  onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file) {
-                                      field.onChange(file);
-                                    }
-                                  }}
-                                />
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Description</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Brief description of the recipe"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="flex items-center justify-center md:w-[30%]">
                     <FormField
                       control={form.control}
-                      name="category"
+                      name="image"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Category *</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl className="w-full">
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select category" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {categories.map((cat) => (
-                                <SelectItem key={cat} value={cat}>
-                                  {cat}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="servings"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Servings *</FormLabel>
                           <FormControl>
-                            <Input type="number" min={1} {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="prepTime"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Prep Time (min)</FormLabel>
-                          <FormControl>
-                            <Input type="number" min={0} {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="cookTime"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Cook Time (min)</FormLabel>
-                          <FormControl>
-                            <Input type="number" min={0} {...field} />
+                            <div className="relative w-full h-full min-h-48 max-h-72 bg-muted/30 rounded-lg border-2 border-dashed border-muted-foreground/30 flex items-center justify-center overflow-hidden">
+                              {field.value ? (
+                                <div className="relative w-full h-full">
+                                  <Image
+                                    src={URL.createObjectURL(field.value)}
+                                    alt="Recipe preview"
+                                    height={400}
+                                    width={400}
+                                    className="w-full h-full object-cover"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="icon"
+                                    className="absolute top-2 right-2"
+                                    onClick={() => field.onChange(null)}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              ) : (
+                                <label
+                                  htmlFor="recipe-image-upload"
+                                  className="flex flex-col items-center gap-4 cursor-pointer p-8 text-center"
+                                >
+                                  <div className="flex items-center justify-center rounded-full bg-muted/50">
+                                    <Upload className="h-8 w-8 text-muted-foreground" />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-sm font-medium">
+                                      Upload your Recipe Photo
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                      Drag and drop or click to upload
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                      (Max 5MB, JPG/PNG)
+                                    </p>
+                                  </div>
+                                </label>
+                              )}
+                              <input
+                                id="recipe-image-upload"
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    field.onChange(file);
+                                  }
+                                }}
+                              />
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -301,7 +234,79 @@ export const Builder = () => {
                     />
                   </div>
                 </div>
-              
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Category *</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl className="w-full">
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {categories.map((cat) => (
+                              <SelectItem key={cat} value={cat}>
+                                {cat}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="servings"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Servings *</FormLabel>
+                        <FormControl>
+                          <Input type="number" min={1} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="prepTime"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Prep Time (min)</FormLabel>
+                        <FormControl>
+                          <Input type="number" min={0} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="cookTime"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Cook Time (min)</FormLabel>
+                        <FormControl>
+                          <Input type="number" min={0} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
             </Header>
           </div>
 
