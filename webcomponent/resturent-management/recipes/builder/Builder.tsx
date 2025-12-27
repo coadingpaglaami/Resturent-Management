@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -38,8 +37,14 @@ const ingredients = [
 
 const ingredientSchema = z.object({
   ingredientId: z.string().min(1, "Select an ingredient"),
-  quantity: z.coerce.number().positive("Quantity must be positive"),
-  unit: z.string().min(1, "Select a unit"),
+  buyingquantity: z.coerce.number().positive("Quantity must be positive"),
+  buyingunit: z.string().min(1, "Select a unit"),
+  actualquantity: z.number().optional(), // new quantity field
+  actualUnit: z.string().optional(), // new cups field (string for fractional input)
+});
+
+const instructionSchema = z.object({
+  instruction: z.string().min(1, "Instruction cannot be empty"),
 });
 
 const formSchema = z.object({
@@ -50,7 +55,10 @@ const formSchema = z.object({
   prepTime: z.number().min(0, "Prep time >= 0"),
   cookTime: z.number().min(0, "Cook time >= 0"),
   ingredients: z.array(ingredientSchema).min(1, "Add at least one ingredient"),
-  instructions: z.string().min(1, "Instructions are required"),
+  instructions: z
+    .array(instructionSchema)
+    .min(1, "Add at least one instruction"),
+
   image: z
     .any()
     .optional()
@@ -77,16 +85,41 @@ export const Builder = () => {
       servings: 1,
       prepTime: 0,
       cookTime: 0,
-      ingredients: [{ ingredientId: "", quantity: 0, unit: "" }],
-      instructions: "",
+      ingredients: [
+        {
+          ingredientId: "",
+          buyingquantity: 0,
+          buyingunit: "",
+          actualquantity: 0,
+          actualUnit: "",
+        },
+      ],
+      instructions: [{ instruction: "" }],
       image: null,
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  // Ingredients field array
+  const {
+    fields: ingredientFields,
+    append: appendIngredient,
+    remove: removeIngredient,
+  } = useFieldArray({
     control: form.control,
     name: "ingredients",
   });
+
+  // Instructions field array (NEW)
+  const {
+    fields: instructionFields,
+    append: appendInstruction,
+    remove: removeInstruction,
+  } = useFieldArray({
+    control: form.control,
+    name: "instructions",
+  });
+
+  console.log("Checking value:", instructionFields);
 
   // const watchedIngredients = form.watch(
   //   "ingredients"
@@ -103,7 +136,7 @@ export const Builder = () => {
       "3": 0.2,
     };
     const costPerUnit = mockCosts[ing.ingredientId] || 0;
-    return sum + costPerUnit * ing.quantity;
+    return sum + costPerUnit * ing.buyingquantity;
   }, 0);
 
   const costPerServing =
@@ -320,7 +353,11 @@ export const Builder = () => {
                 type="button"
                 varient="primary"
                 onClick={() =>
-                  append({ ingredientId: "", quantity: 0, unit: "" })
+                  appendIngredient({
+                    ingredientId: "",
+                    buyingquantity: 0,
+                    buyingunit: "",
+                  })
                 }
                 icon={<Plus />}
               >
@@ -329,7 +366,7 @@ export const Builder = () => {
             </div>
 
             <div className="space-y-4">
-              {fields.map((field, index) => (
+              {ingredientFields.map((field, index) => (
                 <div
                   key={field.id}
                   className="flex flex-col md:flex-row md:items-end gap-3.5"
@@ -371,7 +408,7 @@ export const Builder = () => {
                   <div>
                     <FormField
                       control={form.control}
-                      name={`ingredients.${index}.quantity`}
+                      name={`ingredients.${index}.buyingquantity`}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel
@@ -397,7 +434,68 @@ export const Builder = () => {
                   <div>
                     <FormField
                       control={form.control}
-                      name={`ingredients.${index}.unit`}
+                      name={`ingredients.${index}.buyingunit`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel
+                            className={index !== 0 ? "sr-only" : undefined}
+                          >
+                            Unit
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Unit" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {units.map((u) => (
+                                <SelectItem key={u} value={u}>
+                                  {u}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <span className="mb-2">=</span>
+
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name={`ingredients.${index}.actualquantity`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel
+                            className={index !== 0 ? "sr-only" : undefined}
+                          >
+                            Quantity
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min={0}
+                              step="any"
+                              {...field}
+                              value={field.value as number}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name={`ingredients.${index}.actualUnit`}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel
@@ -431,8 +529,8 @@ export const Builder = () => {
                   <Button
                     type="button"
                     variant="destructive"
-                    onClick={() => remove(index)}
-                    disabled={fields.length === 1}
+                    onClick={() => removeIngredient(index)}
+                    disabled={ingredientFields.length === 1}
                   >
                     <Trash2 />
                   </Button>
@@ -454,33 +552,52 @@ export const Builder = () => {
             </div>
           </div>
 
-          <div
-            className="space-y-4 box-shadow-card p-4 rounded-lg bg-white border border-gray-200
-    dark:border-gray-700 dark:bg-gray-800"
-          >
-            <h2 className="text-lg font-semibold">Cooking Instructions</h2>
-            <FormField
-              control={form.control}
-              name="instructions"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Enter step-by-step cooking instructions *
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="1. Preheat oven...&#10;2. Mix ingredients..."
-                      className="min-h-[200px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Use numbered steps for clarity.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <div className="space-y-4 box-shadow-card p-4 rounded-lg bg-white border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Cooking Instructions</h2>
+              <ButtonIcon
+                varient="primary"
+                icon={<Plus />}
+                type="button"
+                onClick={() => appendInstruction({ instruction: "" })}
+              >
+                Add Instruction
+              </ButtonIcon>
+            </div>
+
+            {instructionFields.map((item, index) => (
+              <FormField
+                key={item.id}
+                control={form.control}
+                name={`instructions.${index}.instruction`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                      Instruction
+                    </FormLabel>
+                    <div className="flex gap-2 items-start">
+                      <FormControl>
+                        <Input
+                          placeholder={`Instruction ${index + 1}`}
+                          {...field}
+                        />
+                      </FormControl>
+
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeInstruction(index)}
+                        disabled={instructionFields.length === 1}
+                      >
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      </Button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
           </div>
 
           <div className="flex justify-end gap-4">
