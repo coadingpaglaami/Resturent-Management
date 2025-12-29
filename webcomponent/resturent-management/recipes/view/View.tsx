@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeCanvas } from "qrcode.react";
-import { Copy, Edit, QrCode, ChevronDown } from "lucide-react";
+import { Copy, Edit, QrCode, ChevronDown, Eye } from "lucide-react";
 
 import { Heading, ButtonIcon } from "@/webcomponent/reusable";
 import { Plus } from "lucide-react";
@@ -31,6 +31,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Image from "next/image";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { RecipeSheetView } from "./RecipeDetails";
+import { useRouter } from "next/navigation";
 
 export const View = () => {
   const [recipes, setRecipes] = useState<RepiesData[]>(recipesDataArray);
@@ -38,6 +48,8 @@ export const View = () => {
   const [openRecipeId, setOpenRecipeId] = useState<number | null>(null);
   const [qrOpen, setQrOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<RepiesData | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const router = useRouter();
 
   const uniqueCategories = [
     { label: "All Categories", value: "all" },
@@ -70,9 +82,6 @@ export const View = () => {
     setQrOpen(true);
   };
 
-  const editRecipe = (id: number) => {
-    console.log(`Edit recipe ID: ${id}`);
-  };
 
   return (
     <div className="flex flex-col gap-8 py-16 w-full  ">
@@ -120,34 +129,44 @@ export const View = () => {
                 onClick={() => toggleAccordion(recipe.id)}
                 className="w-full flex justify-between items-center p-6 text-left hover:opacity-80 transition-opacity"
               >
-                <div className="flex md:flex-row items-baseline">
-                  <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-semibold">
-                      {recipe.recipeName}
-                    </h3>
-                    <p className="text-sm mt-1">{recipe.subtitle}</p>
-                    <div className="flex gap-2">
-                      <div className="text-right flex gap-2.5">
-                        <p>Servings</p>
-                        <p className="font-medium">{recipe.servings}</p>
-                      </div>
-                      <div className="text-right flex gap-2.5 ">
-                        <p>Prep Time</p>
-                        <p className="font-medium">{recipe.preparationTime}</p>
-                      </div>
-                      <div className="text-right flex gap-2.5">
-                        <p>Cook Time</p>
-                        <p className="font-medium">{recipe.cookingTime}</p>
+                <div className="flex items-stretch gap-4 ">
+                  <div className="flex md:flex-row items-baseline grow-0">
+                    <div className="flex flex-col gap-2">
+                      <h3 className="text-xl font-semibold">
+                        {recipe.recipeName}
+                      </h3>
+                      <p className="text-sm mt-1">{recipe.subtitle}</p>
+                      <div className="flex gap-2">
+                        <div className="text-right flex gap-2.5">
+                          <p>Servings</p>
+                          <p className="font-medium">{recipe.servings}</p>
+                        </div>
+                        <div className="text-right flex gap-2.5 ">
+                          <p>Prep Time</p>
+                          <p className="font-medium">
+                            {recipe.preparationTime}
+                          </p>
+                        </div>
+                        <div className="text-right flex gap-2.5">
+                          <p>Cook Time</p>
+                          <p className="font-medium">{recipe.cookingTime}</p>
+                        </div>
                       </div>
                     </div>
+                    {recipe.category && (
+                      <span className="inline-block mt-2 px-3 py-1 text-xs font-medium border dark:border-blue-300 dark:text-blue-300 rounded-full">
+                        {recipe.category}
+                      </span>
+                    )}
                   </div>
-                  {recipe.category && (
-                    <span className="inline-block mt-2 px-3 py-1 text-xs font-medium border border-blue-300 text-blue-300 rounded-full">
-                      {recipe.category}
-                    </span>
-                  )}
+                  <Image
+                    src="/itemimage/foodimage.webp"
+                    alt={recipe.recipeName}
+                    width={80}
+                    height={80}
+                    className="h-auto w-auto object-cover rounded-md"
+                  />
                 </div>
-
                 <div className="flex items-center gap-8 text-sm text-gray-300">
                   <div className="text-right">
                     <p>Total Cost</p>
@@ -235,7 +254,7 @@ export const View = () => {
                       <div className="flex flex-wrap gap-4 mt-8">
                         <Button
                           variant="secondary"
-                          onClick={() => editRecipe(recipe.id)}
+                          onClick={() => router.push(`/recipes/builder/edit/${recipe.id}`)}
                         >
                           <Edit className="mr-2 h-4 w-4" />
                           Edit Recipe
@@ -254,6 +273,31 @@ export const View = () => {
                           <QrCode className="mr-2 h-4 w-4" />
                           Generate QR Code
                         </Button>
+                        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+                          <SheetTrigger asChild>
+                            <Button variant="secondary">
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Recipe
+                            </Button>
+                          </SheetTrigger>
+                          <SheetContent className="overflow-y-auto dark:bg-[#1D293D]">
+                            <SheetHeader>
+                              <SheetTitle>{recipe.recipeName}</SheetTitle>
+
+                              <div className="flex items-center justify-between gap-2">
+                                <p className="text-sm text-slate-600 flex-1">
+                                  {recipe.subtitle}
+                                </p>
+                                {recipe.category && (
+                                  <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full whitespace-nowrap">
+                                    {recipe.category}
+                                  </span>
+                                )}
+                              </div>
+                            </SheetHeader>
+                            <RecipeSheetView recipe={recipe} />
+                          </SheetContent>
+                        </Sheet>
                       </div>
                     </motion.div>
                   </motion.div>

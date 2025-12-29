@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/webcomponent/reusable";
+import { Card } from "@/components/ui/card";
 
 interface InventoryCountsViewChildProps {
   inventory: InventoryCountData;
@@ -73,9 +74,9 @@ export default function StatsOverview({ finalTotals }: StatsOverviewProps) {
         const { display, isNegative } = formatValue(stat.value, stat.format);
 
         return (
-          <div
+          <Card
             key={stat.label}
-            className="rounded-xl dark:bg-slate-900/70 backdrop-blur-md border border-slate-800 px-6 py-5"
+            className="rounded-xl px-6 py-5"
           >
             <p className="text-sm font-medium">{stat.label}</p>
             <p
@@ -86,7 +87,7 @@ export default function StatsOverview({ finalTotals }: StatsOverviewProps) {
               {isNegative ? "-" : ""}
               {display}
             </p>
-          </div>
+          </Card>
         );
       })}
     </div>
@@ -199,7 +200,7 @@ export const InventoryCountDataComponent = ({
           return (
             <div
               key={section.header}
-              className="overflow-hidden rounded-xl border border-slate-700 dark:bg-slate-800/40 backdrop-blur"
+              className="overflow-hidden rounded-xl border dark:border-slate-700 dark:bg-slate-800/40 box-shadow-card bg-white"
             >
               <button
                 onClick={() => toggleSection(section.header)}
@@ -236,7 +237,7 @@ export const InventoryCountDataComponent = ({
                     animate={{ height: "auto" }}
                     exit={{ height: 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="overflow-hidden border-t border-slate-700"
+                    className="overflow-hidden border-t dark:border-slate-700 box-shadow-card"
                   >
                     <Table>
                       <TableHeader>
@@ -335,7 +336,7 @@ export const InventoryCountDataComponent = ({
         </Button>
         <Button
           size="lg"
-          className="dark:bg-green-600 hover:dark:bg-green-700 text-white font-semibold"
+          className="bg-green-600 hover:bg-green-700 text-white font-semibold"
         >
           Submit Count
         </Button>

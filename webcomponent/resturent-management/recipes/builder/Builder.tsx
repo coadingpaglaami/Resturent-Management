@@ -25,6 +25,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Image from "next/image";
+import { RepiesData } from "../view/Data";
+import { useEffect } from "react";
 
 const categories = ["Main Course", "Appetizer", "Dessert", "Beverage"];
 const units = ["g", "kg", "lb", "oz", "ml", "l", "tsp", "tbsp", "cup", "piece"];
@@ -34,6 +36,33 @@ const ingredients = [
   { id: "3", name: "Tomato" },
   { id: "4", name: "Salmon" },
 ];
+
+// Convert all weights to grams
+const weightConversion: Record<string, number> = {
+  g: 1,
+  kg: 1000,
+  lb: 453.592,
+  oz: 28.3495,
+};
+
+// Convert all volumes to milliliters
+const volumeConversion: Record<string, number> = {
+  ml: 1,
+  l: 1000,
+  tsp: 4.92892,
+  tbsp: 14.7868,
+  cup: 240,
+};
+
+// Countable units
+const pieceConversion: Record<string, number> = {
+  piece: 1,
+};
+
+interface BuilderProps {
+  mode?: "create" | "edit";
+  recipeData?: RepiesData;
+}
 
 const ingredientSchema = z.object({
   ingredientId: z.string().min(1, "Select an ingredient"),
@@ -54,6 +83,7 @@ const formSchema = z.object({
   servings: z.number().positive("Servings must be positive"),
   prepTime: z.number().min(0, "Prep time >= 0"),
   cookTime: z.number().min(0, "Cook time >= 0"),
+  labourCost: z.number().min(0, "Labour cost >= 0"),
   ingredients: z.array(ingredientSchema).min(1, "Add at least one ingredient"),
   instructions: z
     .array(instructionSchema)
@@ -75,7 +105,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const Builder = () => {
+export const Builder = ({ mode = "create", recipeData }: BuilderProps) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -95,9 +125,41 @@ export const Builder = () => {
         },
       ],
       instructions: [{ instruction: "" }],
+      labourCost: 0,
       image: null,
     },
   });
+
+  const extractMinutes = (value?: string): number => {
+    if (!value) return 0;
+    const match = value.match(/\d+/);
+    return match ? Number(match[0]) : 0;
+  };
+  useEffect(() => {
+    if (mode === "edit" && recipeData) {
+      form.reset({
+        name: recipeData.recipeName,
+        description: recipeData.subtitle,
+        category: recipeData.category ?? "",
+        servings: recipeData.servings,
+        prepTime: extractMinutes(recipeData.preparationTime),
+        cookTime: extractMinutes(recipeData.cookingTime),
+
+        ingredients: recipeData.ingredients.map((ing) => ({
+          buyingquantity: Number(ing.quantity) || 0,
+          buyingunit: ing.unit,
+          actualquantity: Number(ing.quantity) || 0,
+          actualUnit: ing.unit,
+        })),
+
+        instructions: recipeData.instructions.map((i) => ({
+          instruction: i,
+        })),
+
+        image: null,
+      });
+    }
+  }, [mode, recipeData, form]);
 
   // Ingredients field array
   const {
@@ -147,6 +209,54 @@ export const Builder = () => {
   const onSubmit = (data: FormValues) => {
     console.log("Submitted data:", data);
   };
+
+  useEffect(() => {
+    if (!watchedIngredients) return;
+
+    watchedIngredients.forEach((ing, index) => {
+      if (!ing) return;
+      const buyingQty = Number(ing.buyingquantity) || 0;
+      const buyingUnit = ing.buyingunit;
+      if (!buyingQty || !buyingUnit) return;
+
+      let baseValue = 0;
+
+      // Determine base value in grams/ml/piece
+      if (weightConversion[buyingUnit]) {
+        baseValue = buyingQty * weightConversion[buyingUnit];
+      } else if (volumeConversion[buyingUnit]) {
+        baseValue = buyingQty * volumeConversion[buyingUnit];
+      } else if (pieceConversion[buyingUnit]) {
+        baseValue = buyingQty * pieceConversion[buyingUnit];
+      }
+
+      // Convert to actualUnit if provided, else keep same as buyingUnit
+      const actualUnit = ing.actualUnit || buyingUnit;
+      let actualQuantity = baseValue;
+
+      if (actualUnit !== buyingUnit) {
+        if (weightConversion[actualUnit]) {
+          actualQuantity = baseValue / weightConversion[actualUnit];
+        } else if (volumeConversion[actualUnit]) {
+          actualQuantity = baseValue / volumeConversion[actualUnit];
+        } else if (pieceConversion[actualUnit]) {
+          actualQuantity = baseValue / pieceConversion[actualUnit];
+        }
+      }
+
+      // Update actualquantity and actualUnit only when changed to avoid loops
+      const rounded = parseFloat(actualQuantity.toFixed(2));
+      const currentQty = form.getValues(`ingredients.${index}.actualquantity`);
+      const currentUnit = form.getValues(`ingredients.${index}.actualUnit`);
+
+      if (currentQty !== rounded) {
+        form.setValue(`ingredients.${index}.actualquantity`, rounded);
+      }
+      if (currentUnit !== actualUnit) {
+        form.setValue(`ingredients.${index}.actualUnit`, actualUnit);
+      }
+    });
+  }, [watchedIngredients, form]);
 
   return (
     <div className="py-16 flex flex-col gap-8">
@@ -268,7 +378,7 @@ export const Builder = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 xl:grid-cols-5 gap-4">
                   <FormField
                     control={form.control}
                     name="category"
@@ -331,6 +441,19 @@ export const Builder = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Cook Time (min)</FormLabel>
+                        <FormControl>
+                          <Input type="number" min={0} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="labourCost"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Labour Cost</FormLabel>
                         <FormControl>
                           <Input type="number" min={0} {...field} />
                         </FormControl>
