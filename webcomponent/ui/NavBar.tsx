@@ -82,7 +82,11 @@ export const NavBar = () => {
       {/* Notification Icon */}
 
       <div className="flex gap-4 items-center">
-        <Button variant={'ghost'} className="relative" onClick={()=>router.push('/notification')} >
+        <Button
+          variant={"ghost"}
+          className="relative"
+          onClick={() => router.push("/notification")}
+        >
           <BellIcon />
           <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full"></span>
         </Button>
@@ -145,6 +149,7 @@ export const NavBar = () => {
                 </motion.div>
               )}
             </PopoverItem>
+            <PopoverItem onClick={()=>router.push('/signin')}>Logout</PopoverItem>
           </PopoverContent>
         </Popover>
       </div>
