@@ -149,7 +149,9 @@ export const NavBar = () => {
                 </motion.div>
               )}
             </PopoverItem>
-            <PopoverItem onClick={()=>router.push('/signin')}>Logout</PopoverItem>
+            <PopoverItem onClick={() => router.push("/signin")}>
+              Logout
+            </PopoverItem>
           </PopoverContent>
         </Popover>
       </div>

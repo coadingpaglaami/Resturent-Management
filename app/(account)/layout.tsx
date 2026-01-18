@@ -1,3 +1,4 @@
+import TranstackProvider from "@/provider/TranstackProvider";
 import Image from "next/image";
 
 export default function AccountLayout({
@@ -25,10 +26,7 @@ export default function AccountLayout({
           alt="Logo"
           className="mb-8 self-center"
         />
-        <div>
-     {children}
-        </div>
-   
+        <TranstackProvider>{children}</TranstackProvider>
       </div>
     </div>
   );
