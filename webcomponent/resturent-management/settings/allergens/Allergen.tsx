@@ -1,92 +1,126 @@
 "use client";
 
 import { useState } from "react";
-import { Trash2 } from "lucide-react";
-import { Heading } from "@/webcomponent/reusable";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-
-const initialAllergens = [
-  "Milk",
-  "Eggs",
-  "Fish",
-  "Shellfish",
-  "Tree Nuts",
-  "Peanuts",
-  "Wheat",
-  "Gluten",
-  "Soy",
-  "Sesame",
-];
+import {
+  AllergenManagement,
+  AllergenItem,
+  PaginationData,
+} from "@/webcomponent/reusable";
+import {
+  useGetAllergenListQuery,
+  useCreateAllergenMutation,
+  useUpdateAllergenMutation,
+  useDeleteAllergenMutation,
+} from "@/api/allergen";
+import { toast } from "sonner"; // or your toast library
 
 export const Allergen = () => {
-  const [allergens, setAllergens] = useState<string[]>(initialAllergens);
-  const [newAllergen, setNewAllergen] = useState("");
+  const [loadingItemId, setLoadingItemId] = useState<string | number | null>(
+    null,
+  );
 
-  const handleAddAllergen = () => {
-    if (newAllergen.trim() && !allergens.includes(newAllergen.trim())) {
-      setAllergens([...allergens, newAllergen.trim()]);
-      setNewAllergen("");
+  // Fetch allergens
+  const { data, isLoading } = useGetAllergenListQuery();
+
+  // Mutations
+  const createMutation = useCreateAllergenMutation();
+  const updateMutation = useUpdateAllergenMutation();
+  const deleteMutation = useDeleteAllergenMutation();
+
+  // Define the type for the API allergen item
+  interface ApiAllergenItem {
+    _id?: string | number;
+    id?: string | number;
+    name: string;
+    // Add other fields if needed
+  }
+
+  // Transform API data to component format
+  const allergens: AllergenItem[] =
+    data?.data?.map((item: ApiAllergenItem) => ({
+      id: item._id || item.id,
+      name: item.name,
+    })) || [];
+
+  // Pagination data (if your API returns pagination)
+  const pagination: PaginationData | undefined = data?.pagination
+    ? {
+        currentPage: data.pagination.currentPage || 1,
+        totalPages: data.pagination.totalPages || 1,
+        totalItems: data.pagination.totalItems || allergens.length,
+        itemsPerPage: data.pagination.itemsPerPage || 10,
+      }
+    : undefined;
+
+  // Handle Add
+  const handleAdd = async (name: string) => {
+    try {
+      await createMutation.mutateAsync({ name });
+      toast.success("Allergen added successfully");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Failed to add allergen";
+      toast.error(message);
+      throw error;
     }
   };
 
-  const handleRemoveAllergen = (allergen: string) => {
-    setAllergens(allergens.filter((a) => a !== allergen));
+  // Handle Edit
+  const handleEdit = async (id: string | number, newName: string) => {
+    setLoadingItemId(id);
+    try {
+      await updateMutation.mutateAsync({
+        allergenId: String(id),
+        payload: { name: newName },
+      });
+      toast.success("Allergen updated successfully");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Failed to update allergen";
+      toast.error(message);
+      throw error;
+    } finally {
+      setLoadingItemId(null);
+    }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleAddAllergen();
+  // Handle Delete
+  const handleDelete = async (id: string | number) => {
+    setLoadingItemId(id);
+    try {
+      await deleteMutation.mutateAsync(String(id));
+      toast.success("Allergen deleted successfully");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Failed to delete allergen";
+      toast.error(message);
+      throw error;
+    } finally {
+      setLoadingItemId(null);
     }
+  };
+
+  // Handle Page Change (if pagination is supported)
+  const handlePageChange = async (page: number) => {
+    // If your API supports pagination, you'll need to modify the query to accept page parameter
+    // For now, this is a placeholder
+    console.log("Change to page:", page);
   };
 
   return (
-    <div className="p-3 flex flex-col gap-8">
-      <Heading
-        title="Allergen Management"
-        subtitle="Manage allergen types tracked across your ingredients and recipes"
-      />
-
-      {/* Allergen Grid */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {allergens.map((allergen) => (
-              <div
-                key={allergen}
-                className="flex items-center justify-between bg-muted/50 rounded-lg px-4 py-3"
-              >
-                <span className="font-medium">{allergen}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-destructive hover:bg-destructive/10"
-                  onClick={() => handleRemoveAllergen(allergen)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                  <span className="sr-only">Remove {allergen}</span>
-                </Button>
-              </div>
-            ))}
-          </div>
-
-          {/* Add New Allergen */}
-          <div className="mt-8 flex gap-3">
-            <Input
-              placeholder="Add new allergen..."
-              value={newAllergen}
-              onChange={(e) => setNewAllergen(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="flex-1"
-            />
-            <Button onClick={handleAddAllergen} variant={"buttonBlue"}>
-              Add Allergen
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    <AllergenManagement
+      items={allergens}
+      pagination={pagination}
+      title="Allergen Management"
+      subtitle="Manage allergen types tracked across your ingredients and recipes"
+      onAdd={handleAdd}
+      onEdit={handleEdit}
+      onDelete={handleDelete}
+      onPageChange={pagination ? handlePageChange : undefined}
+      addButtonText="Add Allergen"
+      inputPlaceholder="Add new allergen..."
+      isLoading={isLoading}
+      loadingItemId={loadingItemId}
+    />
   );
 };

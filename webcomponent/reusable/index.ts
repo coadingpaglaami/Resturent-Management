@@ -6,3 +6,4 @@ export * from "./Pagination";
 export * from "./Header";
 export * from "./InputField";
 export * from './ButtonIcon';
+export * from './Management';

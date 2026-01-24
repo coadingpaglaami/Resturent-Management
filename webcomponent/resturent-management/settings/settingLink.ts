@@ -12,8 +12,8 @@ export const settingsLink: { label: string, icon: LucideIcon, href: string }[] =
         icon: Users
     },
     {
-        label: "Allergens",
-        href: '/settings/allergens',
+        label: "Constraints",
+        href: '/settings/constraints',
         icon: AlertTriangle
     },
     {
