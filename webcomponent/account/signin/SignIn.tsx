@@ -6,9 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuthHeader } from "@/webcomponent/reusable/AuthHeader";
-import { useLoginMutation } from "@/api/auth"; // Update the import path
+import { useLoginMutation } from "@/api/auth";
 
-// Zod schema for validation
 const signInSchema = z.object({
   email: z
     .email("Please enter a valid email address")
@@ -42,14 +41,12 @@ export const SignIn = () => {
       router.push("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
-      // Handle error (you can add toast notification or error state here)
     }
   };
 
   return (
     <div className="p-4">
-      <div className="bg-white rounded-md shadow-xl w-full max-w-md p-8 ">
-        {/* Logo and Title */}
+      <div className="bg-white dark:bg-gray-900 rounded-md shadow-xl w-full max-w-md p-8">
         <div className="text-center mb-4">
           <AuthHeader
             title="Welcome Back"
@@ -57,23 +54,21 @@ export const SignIn = () => {
           />
         </div>
 
-        {/* Form */}
         <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-          {/* Email Field */}
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">
               Email Address
             </label>
             <div className="relative flex flex-row justify-between">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
                 <Mail size={20} />
               </span>
               <input
                 type="email"
                 placeholder="mail@example.com"
-                className={`w-full pl-10 pr-4 py-3 border ${
-                  errors.email ? "border-red-500" : "border-gray-300"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
+                className={`w-full pl-10 pr-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
+                  errors.email ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                }`}
                 {...register("email")}
                 disabled={loginMutation.isPending}
               />
@@ -85,21 +80,20 @@ export const SignIn = () => {
             )}
           </div>
 
-          {/* Password Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
               Password
             </label>
             <div className="relative flex flex-row justify-between">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
                 <Lock size={20} />
               </span>
               <input
                 type="password"
                 placeholder="Enter your password"
-                className={`w-full pl-10 pr-4 py-3 border ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
+                className={`w-full pl-10 pr-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
+                  errors.password ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                }`}
                 {...register("password")}
                 disabled={loginMutation.isPending}
               />
@@ -111,7 +105,6 @@ export const SignIn = () => {
             )}
           </div>
 
-          {/* Error Message */}
           {loginMutation.isError && (
             <div className="text-sm text-red-500 text-center">
               {loginMutation.error?.message ||
@@ -119,37 +112,34 @@ export const SignIn = () => {
             </div>
           )}
 
-          {/* Remember Me & Forgot Password */}
           <div className="flex items-center justify-between text-sm">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                className="w-4 h-4 text-indigo-600 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500"
               />
-              <span className="text-gray-600">Remember me</span>
+              <span className="text-gray-600 dark:text-gray-400">Remember me</span>
             </label>
             <Link
               href="/forgot-password"
-              className="text-indigo-600 hover:text-indigo-700 font-medium"
+              className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
             >
               Forgot password?
             </Link>
           </div>
 
-          {/* Terms */}
-          <p className="text-xs text-gray-500 text-center">
+          <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
             By continuing an account, you agree to{" "}
-            <a href="#" className="text-indigo-600 hover:underline">
+            <a href="#" className="text-indigo-600 dark:text-indigo-400 hover:underline">
               Terms of use
             </a>{" "}
             and{" "}
-            <a href="#" className="text-indigo-600 hover:underline">
+            <a href="#" className="text-indigo-600 dark:text-indigo-400 hover:underline">
               Privacy Policy
             </a>
             .
           </p>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={loginMutation.isPending}
