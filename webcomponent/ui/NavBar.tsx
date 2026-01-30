@@ -24,6 +24,7 @@ import { Switch } from "@/components/ui/switch";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { clearTokens } from "@/lib/cookies";
 
 export const NavBar = () => {
   const [isLanguageOpen, setIsLanguageOpen] = useState(false); // State to control language options visibility
@@ -149,7 +150,12 @@ export const NavBar = () => {
                 </motion.div>
               )}
             </PopoverItem>
-            <PopoverItem onClick={() => router.push("/signin")}>
+            <PopoverItem
+              onClick={() => {
+                clearTokens();
+                router.push("/signin");
+              }}
+            >
               Logout
             </PopoverItem>
           </PopoverContent>

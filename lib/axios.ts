@@ -2,7 +2,7 @@ import axios from "axios";
 import { getAccessToken } from "./cookies";
 
 const axiosInstance = axios.create({
-  baseURL: "http://31.97.10.158:8000",
+  baseURL: "https://jasonsaji.duckdns.org",
   timeout: 10000,
 });
 

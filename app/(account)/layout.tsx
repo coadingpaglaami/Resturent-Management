@@ -9,7 +9,7 @@ export default function AccountLayout({
   return (
     <div className="min-h-screen flex justify-center items-center ">
       <Image
-        src={"/account/left-image.png"}
+        src= "/authImages/left-image.png"
         width={800}
         height={800}
         alt="Left Decorative"
@@ -20,7 +20,7 @@ export default function AccountLayout({
       />
       <div className="flex flex-col gap-2.5">
         <Image
-          src={"/account/food-management.png"}
+          src={"/authImages/food-management.png"}
           width={100}
           height={100}
           alt="Logo"

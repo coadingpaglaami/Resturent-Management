@@ -31,5 +31,5 @@ export default function proxy(req: NextRequest) {
 
 // Apply middleware to all routes except Next.js static files
 export const config = {
-  matcher: ["/((?!_next/static|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|authImages|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)"],
 };
