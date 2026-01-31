@@ -50,7 +50,7 @@ export interface AllergenManagementProps {
   loadingItemId?: string | number | null;
 }
 
-export const AllergenManagement = ({
+export const Management = ({
   items,
   pagination,
   title,

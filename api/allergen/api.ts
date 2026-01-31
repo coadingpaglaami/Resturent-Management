@@ -1,11 +1,17 @@
 import axios from "@/lib/axios";
 import { ALLERGEN, ALLERGEN_DETAIL } from "./path";
 import { FOOD_MANAGER } from "../location/path";
+import { EntityResponse } from "@/interface/Constrain";
+import { Pagination } from "@/interface/Pagination";
 
-export const getAllergenList = async () => {
-  const { data } = await axios.get(`/${FOOD_MANAGER}/${ALLERGEN}/`);
+export const getAllergenList = async ({
+  page,
+  limit,
+}: Pagination): Promise<EntityResponse> => {
+  const { data } = await axios.get(`/${FOOD_MANAGER}/${ALLERGEN}/`, {
+    params: { page, limit },
+  });
   return data;
-  // Implementation for fetching allergen list
 };
 
 export const createAllergen = async (payload: { name: string }) => {
@@ -28,7 +34,7 @@ export const updateAllergen = async (
 
 export const deleteAllergen = async (allergenId: string) => {
   const { data } = await axios.delete(
-    `/${FOOD_MANAGER}/${ALLERGEN_DETAIL}/${allergenId}`,
+    `/${FOOD_MANAGER}/${ALLERGEN_DETAIL}/${allergenId}/`,
   );
   return data;
   // Implementation for deleting an allergen

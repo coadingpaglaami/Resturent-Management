@@ -1,16 +1,21 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, UseQueryResult } from "@tanstack/react-query";
 import {
   getAllergenList,
   createAllergen,
   updateAllergen,
   deleteAllergen,
 } from "./api"; // Import your API functions
+import { EntityResponse } from "@/interface/Constrain";
+import { Pagination } from "@/interface/Pagination";
 
 // Fetch Allergen List Query
-export const useGetAllergenListQuery = () => {
+export const useGetAllergenListQuery = ({
+  page = 1,
+  limit = 10,
+}: Pagination): UseQueryResult<EntityResponse, Error> => {
   return useQuery({
-    queryKey: ["allergenList"],
-    queryFn: getAllergenList,
+    queryKey: ["allergenList", page, limit],
+    queryFn: () => getAllergenList({ page, limit }),
     staleTime: 10 * 60 * 1000, // 10 minutes
   });
 };

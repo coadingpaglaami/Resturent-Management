@@ -1,11 +1,12 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   CreateLocation,
-  GetLocations,
+  GetAllLocations,
   GetLocationDetails,
   UpdateLocation,
   DeleteLocation,
 } from "./api"; // Import your API functions
+import { Pagination } from "@/interface/Pagination";
 
 // Create Location Mutation
 export const useCreateLocationMutation = () => {
@@ -18,10 +19,10 @@ export const useCreateLocationMutation = () => {
 };
 
 // Get Locations Query
-export const useGetLocationsQuery = () => {
+export const useGetLocationsQuery = ({page, limit}: Pagination) => {
   return useQuery({
-    queryKey: ["locations"],
-    queryFn: GetLocations,
+    queryKey: ["locations", page, limit],
+    queryFn: () => GetAllLocations({page, limit}),
     staleTime: 10 * 60 * 1000, // 10 minutes
   });
 };

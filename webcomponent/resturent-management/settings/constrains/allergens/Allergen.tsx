@@ -1,11 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  AllergenManagement,
-  AllergenItem,
-  PaginationData,
-} from "@/webcomponent/reusable";
+import { Management, PaginationData } from "@/webcomponent/reusable";
 import {
   useGetAllergenListQuery,
   useCreateAllergenMutation,
@@ -13,14 +9,20 @@ import {
   useDeleteAllergenMutation,
 } from "@/api/allergen";
 import { toast } from "sonner"; // or your toast library
+import { Entity } from "@/interface/Constrain";
 
 export const Allergen = () => {
   const [loadingItemId, setLoadingItemId] = useState<string | number | null>(
     null,
   );
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 10;
 
   // Fetch allergens
-  const { data, isLoading } = useGetAllergenListQuery();
+  const { data, isLoading,refetch } = useGetAllergenListQuery({
+    page: currentPage,
+    limit: itemsPerPage,
+  });
 
   // Mutations
   const createMutation = useCreateAllergenMutation();
@@ -28,27 +30,21 @@ export const Allergen = () => {
   const deleteMutation = useDeleteAllergenMutation();
 
   // Define the type for the API allergen item
-  interface ApiAllergenItem {
-    _id?: string | number;
-    id?: string | number;
-    name: string;
-    // Add other fields if needed
-  }
 
   // Transform API data to component format
-  const allergens: AllergenItem[] =
-    data?.data?.map((item: ApiAllergenItem) => ({
-      id: item._id || item.id,
+  const allergens =
+    data?.results?.map((item: Entity) => ({
+      id: item.id,
       name: item.name,
-    })) || [];
+    })) || ([] satisfies Entity[]);
 
   // Pagination data (if your API returns pagination)
-  const pagination: PaginationData | undefined = data?.pagination
+  const pagination: PaginationData | undefined = data?.results
     ? {
-        currentPage: data.pagination.currentPage || 1,
-        totalPages: data.pagination.totalPages || 1,
-        totalItems: data.pagination.totalItems || allergens.length,
-        itemsPerPage: data.pagination.itemsPerPage || 10,
+        currentPage: currentPage || 1,
+        totalPages: Math.ceil((data.count || 1) / itemsPerPage),
+        totalItems: data.count || allergens.length,
+        itemsPerPage: itemsPerPage,
       }
     : undefined;
 
@@ -57,6 +53,7 @@ export const Allergen = () => {
     try {
       await createMutation.mutateAsync({ name });
       toast.success("Allergen added successfully");
+      refetch();
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "Failed to add allergen";
@@ -74,6 +71,7 @@ export const Allergen = () => {
         payload: { name: newName },
       });
       toast.success("Allergen updated successfully");
+      refetch();
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "Failed to update allergen";
@@ -90,6 +88,7 @@ export const Allergen = () => {
     try {
       await deleteMutation.mutateAsync(String(id));
       toast.success("Allergen deleted successfully");
+      refetch();
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "Failed to delete allergen";
@@ -105,10 +104,12 @@ export const Allergen = () => {
     // If your API supports pagination, you'll need to modify the query to accept page parameter
     // For now, this is a placeholder
     console.log("Change to page:", page);
+    setCurrentPage(page);
+    refetch();
   };
 
   return (
-    <AllergenManagement
+    <Management
       items={allergens}
       pagination={pagination}
       title="Allergen Management"
