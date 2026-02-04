@@ -1,9 +1,16 @@
 import { Pagination } from "@/interface/Pagination";
-import { CatalogItem, SquareCustomer, SquareInvoice, SquareItem, SquareOrder } from "@/interface/pos";
+import {
+  CatalogItem,
+  PosProvider,
+  SquareCustomer,
+  SquareInvoice,
+  SquareItem,
+  SquareOrder,
+  SyncPayload,
+} from "@/interface/pos";
 import axios from "@/lib/axios";
 import { CUSTOMERS, INVOICES, ITEMS, ORDERS, SQUARE } from "./path";
 import { PaginatedResponse } from "@/interface/PaginatedResponse";
-
 
 export const getCatalogList = async ({
   page,
@@ -23,7 +30,7 @@ export const getSquareItemList = async ({
     params: { page, limit },
   });
   return data;
-};  
+};
 
 export const getSquareCustomerList = async ({
   page,
@@ -55,7 +62,18 @@ export const getSquareInvoiceList = async ({
   return data;
 };
 
-export const squareSync = async ({location_id}:{location_id: string}) => {
-  const { data } = await axios.post(`/square/sync-to-inventory/`, { location_id });
+export const syncToInventory = async ({
+  provider,
+  location_id,
+}: SyncPayload) => {
+  const endpointMap: Record<PosProvider, string> = {
+    square: "/square/sync-to-inventory/",
+    clover: "/clover/sync-to-inventory/",
+  };
+
+  const { data } = await axios.post(endpointMap[provider], {
+    location_id,
+  });
+
   return data;
-}
+};

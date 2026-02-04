@@ -10,15 +10,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetLocationsQuery } from "@/api/location";
-import { useSquareSyncMutation } from "@/api/pos";
 import { toast } from "sonner";
+import { useSyncToInventoryMutation } from "@/api/pos";
+import { PosProvider } from "@/interface/pos";
 
-export const SquareSyncByLocation = () => {
+export const SquareSyncByLocation = ({ provider }: { provider: string }) => {
   const [location_id, setLocationId] = useState<string>("");
 
   const { data, isLoading } = useGetLocationsQuery({ page: 1, limit: 100 });
 
-  const { mutateAsync, isPending } = useSquareSyncMutation();
+  const { mutateAsync, isPending } = useSyncToInventoryMutation();
 
   // adjust this depending on your API response structure
   const locations = data?.results ?? [];
@@ -27,7 +28,7 @@ export const SquareSyncByLocation = () => {
     if (!location_id) return;
 
     try {
-      await mutateAsync({ location_id });
+      await mutateAsync({ provider: provider as PosProvider, location_id });
       toast.success("POS synced successfully ");
     } catch (err) {
       const error = err as Error;
@@ -63,7 +64,7 @@ export const SquareSyncByLocation = () => {
         onClick={handleSync}
         disabled={!location_id || isPending}
         className="w-fit "
-        variant={'secondary'}
+        variant={"secondary"}
       >
         {isPending ? "Syncing..." : "Sync Inventory"}
       </Button>

@@ -1,6 +1,7 @@
 import { Pagination } from "@/interface/Pagination";
 import {
   CatalogItem,
+  PosProvider,
   SquareCustomer,
   SquareInvoice,
   SquareItem,
@@ -13,7 +14,7 @@ import {
   getSquareInvoiceList,
   getSquareItemList,
   getSquareOrderList,
-  squareSync,
+  syncToInventory,
 } from "./api";
 import { PaginatedResponse } from "@/interface/PaginatedResponse";
 
@@ -72,9 +73,10 @@ export const useGetSquareInvoiceListQuery = ({
   });
 };
 
-export const useSquareSyncMutation = () => {
+export const useSyncToInventoryMutation = () => {
   return useMutation({
-    mutationKey: ["squareSyncToInventory"],
-    mutationFn: (payload: { location_id: string }) => squareSync(payload),
+    mutationKey: ["syncToInventory"],
+    mutationFn: (payload: { provider: PosProvider; location_id: string }) =>
+      syncToInventory(payload),
   });
 };

@@ -60,7 +60,7 @@ export const ProviderLinks = async ({ params }: Props) => {
           </a>
         ))}
       </nav>
-      <SquareSyncByLocation />
+      <SquareSyncByLocation provider={resolvedParams.provider}/>
     </div>
   );
 };
