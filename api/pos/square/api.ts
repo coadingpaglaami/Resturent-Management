@@ -1,5 +1,5 @@
 import { Pagination } from "@/interface/Pagination";
-import { CatalogListResponse, SquareCustomer, SquareInvoice, SquareItem, SquareOrder } from "@/interface/pos";
+import { CatalogItem, SquareCustomer, SquareInvoice, SquareItem, SquareOrder } from "@/interface/pos";
 import axios from "@/lib/axios";
 import { CUSTOMERS, INVOICES, ITEMS, ORDERS, SQUARE } from "./path";
 import { PaginatedResponse } from "@/interface/PaginatedResponse";
@@ -8,7 +8,7 @@ import { PaginatedResponse } from "@/interface/PaginatedResponse";
 export const getCatalogList = async ({
   page,
   limit,
-}: Pagination): Promise<CatalogListResponse> => {
+}: Pagination): Promise<PaginatedResponse<CatalogItem>> => {
   const { data } = await axios.get(`/${SQUARE}/catalog/`, {
     params: { page, limit },
   });

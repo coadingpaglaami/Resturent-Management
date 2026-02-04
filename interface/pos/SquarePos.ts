@@ -8,13 +8,6 @@ export interface CatalogItem {
   items: unknown[]; // keep flexible since API returns []
 }
 
-export interface CatalogListResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: CatalogItem[];
-}
-
 export interface SquareItemVariation {
   id: string;
   name: string;

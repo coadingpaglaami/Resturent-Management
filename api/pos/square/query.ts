@@ -1,6 +1,6 @@
 import { Pagination } from "@/interface/Pagination";
 import {
-  CatalogListResponse,
+  CatalogItem,
   SquareCustomer,
   SquareInvoice,
   SquareItem,
@@ -19,7 +19,7 @@ import { PaginatedResponse } from "@/interface/PaginatedResponse";
 export const useGetCatalogListQuery = ({
   page = 1,
   limit = 10,
-}: Pagination): UseQueryResult<CatalogListResponse, Error> => {
+}: Pagination): UseQueryResult<PaginatedResponse<CatalogItem>, Error> => {
   return useQuery({
     queryKey: ["catalogList", page, limit],
     queryFn: () => getCatalogList({ page, limit }),

@@ -1,14 +1,30 @@
 import axios from "@/lib/axios";
 import { PaginatedResponse } from "@/interface/PaginatedResponse";
 import { Pagination } from "@/interface/Pagination";
-import { CloverCustomer, CloverInvoice, CloverItem, CloverOrder, CloverPayment } from "@/interface/pos";
+import {
+  CloverCustomer,
+  CloverInvoice,
+  CloverItem,
+  CloverOrder,
+  CloverPayment,
+} from "@/interface/pos";
 import { CLOVER, CUSTOMERS, INVOICES, ITEMS, ORDERS, PAYMENTS } from "./path";
+
+export const getCloverCatalogList = async ({
+  page,
+  limit,
+}: Pagination): Promise<PaginatedResponse<CloverItem>> => {
+  const { data } = await axios.get(`/${CLOVER}/catalog/`, {
+    params: { page, limit },
+  });
+  return data;
+};
 
 export const getCloverItemList = async ({
   page,
   limit,
 }: Pagination): Promise<PaginatedResponse<CloverItem>> => {
-      const { data } = await axios.get(`/${CLOVER}/${ITEMS}/`, {
+  const { data } = await axios.get(`/${CLOVER}/${ITEMS}/`, {
     params: { page, limit },
   });
   return data;

@@ -1,41 +1,78 @@
 "use client";
 
-import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner"; // or your toast library
+import { useGetUnitListQuery, useUpdateUnitMutation } from "@/api/units/query";
 
 export const UnitAndConversation = () => {
-  // State for each checkbox
-  const [weightUnits, setWeightUnits] = useState({
-    grams: true,
-    kilograms: true,
-    ounces: true,
-    pounds: true,
-  });
+  // Fetch units with object destructuring
+  const {
+    data: unitsData,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useGetUnitListQuery({ page: 1, limit: 100 });
 
-  const [volumeUnits, setVolumeUnits] = useState({
-    milliliters: true,
-    liters: true,
-    fluidOunces: true,
-    cups: true,
-    tablespoons: true,
-    teaspoons: true,
-  });
+  // Update mutation with object destructuring
+  const { mutate: updateUnit, isPending: isUpdating } = useUpdateUnitMutation();
 
-  const handleWeightChange = (key: keyof typeof weightUnits) => {
-    setWeightUnits((prev) => ({ ...prev, [key]: !prev[key] }));
+  const handleUnitToggle = (unitId: string, currentIsActive: boolean) => {
+    updateUnit(
+      {
+        id: unitId,
+        payload: { is_active: !currentIsActive },
+      },
+      {
+        onSuccess: () => {
+          refetch(); // Refetch the data after successful update
+          toast.success("Unit updated successfully");
+        },
+        onError: (error) => {
+          toast.error(`Failed to update unit: ${error.message}`);
+        },
+      },
+    );
   };
 
-  const handleVolumeChange = (key: keyof typeof volumeUnits) => {
-    setVolumeUnits((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
+  // Separate units by type
+  const weightUnits =
+    unitsData?.results?.filter((unit) => unit.unit_type === "weight") || [];
 
-  const handleSave = () => {
-    console.log("Saved units:", { weightUnits, volumeUnits });
-    // Add save logic here
-  };
+  const volumeUnits =
+    unitsData?.results?.filter((unit) => unit.unit_type === "volume") || [];
+
+  if (isLoading) {
+    return (
+      <div className="py-16 flex flex-col gap-8">
+        <div>
+          <h2 className="text-2xl font-semibold">Units & Conversions</h2>
+        </div>
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-muted-foreground">Loading units...</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="py-16 flex flex-col gap-8">
+        <div>
+          <h2 className="text-2xl font-semibold">Units & Conversions</h2>
+        </div>
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-destructive">Error: {error.message}</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="py-16 flex flex-col gap-8">
@@ -47,28 +84,28 @@ export const UnitAndConversation = () => {
         <CardContent className="p-6 space-y-8">
           {/* Weight Units */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-muted-foreground">Weight Units</h3>
+            <h3 className="text-lg font-medium text-muted-foreground">
+              Weight Units
+            </h3>
             <div className="space-y-3">
-              {[
-                { key: "grams", label: "Grams (g)" },
-                { key: "kilograms", label: "Kilograms (kg)" },
-                { key: "ounces", label: "Ounces (oz)" },
-                { key: "pounds", label: "Pounds (lb)" },
-              ].map((unit) => (
+              {weightUnits.map((unit) => (
                 <div
-                  key={unit.key}
+                  key={unit.id}
                   className="flex items-center gap-4 px-4 py-3 rounded-lg bg-muted/40 hover:bg-muted/60 transition-colors"
                 >
                   <Checkbox
-                    id={unit.key}
-                    checked={weightUnits[unit.key as keyof typeof weightUnits]}
-                    onCheckedChange={() => handleWeightChange(unit.key as keyof typeof weightUnits)}
+                    id={unit.id}
+                    checked={unit.is_active}
+                    onCheckedChange={() =>
+                      handleUnitToggle(unit.id, unit.is_active)
+                    }
+                    disabled={isUpdating}
                   />
                   <Label
-                    htmlFor={unit.key}
+                    htmlFor={unit.id}
                     className="flex-1 cursor-pointer text-base font-medium"
                   >
-                    {unit.label}
+                    {unit.name} ({unit.symbol})
                   </Label>
                 </div>
               ))}
@@ -77,39 +114,32 @@ export const UnitAndConversation = () => {
 
           {/* Volume Units */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-muted-foreground">Volume Units</h3>
+            <h3 className="text-lg font-medium text-muted-foreground">
+              Volume Units
+            </h3>
             <div className="space-y-3">
-              {[
-                { key: "milliliters", label: "Milliliters (ml)" },
-                { key: "liters", label: "Liters (L)" },
-                { key: "fluidOunces", label: "Fluid Ounces (fl oz)" },
-                { key: "cups", label: "Cups" },
-                { key: "tablespoons", label: "Tablespoons" },
-                { key: "teaspoons", label: "Teaspoons" },
-              ].map((unit) => (
+              {volumeUnits.map((unit) => (
                 <div
-                  key={unit.key}
+                  key={unit.id}
                   className="flex items-center gap-4 px-4 py-3 rounded-lg bg-muted/40 hover:bg-muted/60 transition-colors"
                 >
                   <Checkbox
-                    id={unit.key}
-                    checked={volumeUnits[unit.key as keyof typeof volumeUnits]}
-                    onCheckedChange={() => handleVolumeChange(unit.key as keyof typeof volumeUnits)}
+                    id={unit.id}
+                    checked={unit.is_active}
+                    onCheckedChange={() =>
+                      handleUnitToggle(unit.id, unit.is_active)
+                    }
+                    disabled={isUpdating}
                   />
                   <Label
-                    htmlFor={unit.key}
+                    htmlFor={unit.id}
                     className="flex-1 cursor-pointer text-base font-medium"
                   >
-                    {unit.label}
+                    {unit.name} ({unit.symbol})
                   </Label>
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Save Button */}
-          <div className="pt-4">
-            <Button onClick={handleSave} variant={'buttonBlue'}>Save Changes</Button>
           </div>
         </CardContent>
       </Card>

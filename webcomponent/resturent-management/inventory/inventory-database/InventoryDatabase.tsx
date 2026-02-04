@@ -6,26 +6,54 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ButtonIcon, Card, CardProps, Heading } from "@/webcomponent/reusable";
-import { cardDataInventory, mixedTableData, TableData } from "./Data";
+import { ButtonIcon, Card, Heading } from "@/webcomponent/reusable";
+import { cardDataInventory } from "./Data";
 import { ArrowUp, Plus } from "lucide-react";
 import { DataBaseTable } from "./DatabaseTable";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useGetAllInventoryCategoriesQuery, useGetInventoryItemListQuery } from "@/api/inventory";
 
-interface InventoryDatabaseProps {
-  cardData: CardProps[];
-  tableData: TableData[];
-}
 
 export const InventoryDatabase = () => {
   const [search, setSearch] = useState("");
-  const router = useRouter();
+  const [page, setPage] = useState(1);
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const databaseData: InventoryDatabaseProps = {
-    cardData: cardDataInventory,
-    tableData: mixedTableData,
-  };
+  const router = useRouter();
+
+  // Fetch inventory items with object destructuring
+  const {
+    data: inventoryData,
+    isLoading: isLoadingInventory,
+    isError: isInventoryError,
+  } = useGetInventoryItemListQuery({ page, limit: 10 });
+
+  // Fetch categories with object destructuring
+  const { data: categoriesData, isLoading: isLoadingCategories } =
+    useGetAllInventoryCategoriesQuery({ page: 1, limit: 10 });
+
+  if (isLoadingInventory || isLoadingCategories) {
+    return (
+      <div className="py-16 flex flex-col gap-4">
+        <Heading
+          title="Inventory Database"
+          subtitle="Loading..."
+        />
+      </div>
+    );
+  }
+
+  if (isInventoryError) {
+    return (
+      <div className="py-16 flex flex-col gap-4">
+        <Heading
+          title="Inventory Database"
+          subtitle="Failed to load inventory data"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="py-16 flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3.5">
@@ -52,11 +80,12 @@ export const InventoryDatabase = () => {
         </div>
       </div>
 
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-4">
-        {databaseData.cardData.map((card, index) => (
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {cardDataInventory.map((card, index) => (
           <Card key={index} {...card} />
         ))}
       </div>
+
       <div className="flex items-center gap-2 w-full">
         {/* Search Bar - 90% */}
         <div className="flex items-center w-[90%] border rounded-md px-3 py-2 bg-white dark:bg-[#1E2A37]">
@@ -82,7 +111,7 @@ export const InventoryDatabase = () => {
           />
         </div>
 
-        {/* Shadcn Select - 10% */}
+        {/* Category Select - 10% */}
         <div className="w-[10%]">
           <Select
             defaultValue="all"
@@ -93,25 +122,25 @@ export const InventoryDatabase = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="baking">Baking</SelectItem>
-              <SelectItem value="meat">Meat</SelectItem>
-              <SelectItem value="seafood">Seafood</SelectItem>
-              <SelectItem value="produce">Produce</SelectItem>
-              <SelectItem value="oils">Oils</SelectItem>
-              <SelectItem value="dairy">Dairy</SelectItem>
-              <SelectItem value="herbs">Herbs</SelectItem>
+              {categoriesData?.results?.map((category) => (
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
       </div>
+
       <div>
-        <div>
-          <DataBaseTable
-            categoryFilter={categoryFilter}
-            searchValue={search}
-            data={mixedTableData}
-          />
-        </div>
+        <DataBaseTable
+          data={inventoryData?.results || []}
+          categoryFilter={categoryFilter}
+          searchValue={search}
+          currentPage={page}
+          totalPages={Math.ceil((inventoryData?.count || 0) / 10)}
+          onPageChange={setPage}
+        />
       </div>
     </div>
   );

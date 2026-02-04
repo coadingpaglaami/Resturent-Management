@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -9,47 +9,40 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ArrowUpDown } from "lucide-react";
-import { TableData } from "./Data";
 import { Pagination } from "@/webcomponent/reusable";
+import { InventoryItem } from "@/interface/Inventory";
+
 
 interface DataBaseTableProps {
-  data: TableData[];
+  data: InventoryItem[];
   categoryFilter: string;
   searchValue: string;
-  rowsPerPage?: number;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
 export const DataBaseTable = ({
   data,
-  categoryFilter,
-  searchValue,
-  rowsPerPage = 10,
-}: DataBaseTableProps) => {
-  const [page, setPage] = useState(1);
 
-  // Filtered data based on props
+  searchValue,
+  currentPage,
+  totalPages,
+  onPageChange,
+}: DataBaseTableProps) => {
+  // Client-side filtering (optional - you might want server-side filtering instead)
   const filteredData = useMemo(() => {
     return data.filter((row) => {
-      const matchesCategory =
-        categoryFilter === "all" ||
-        row.category.toLowerCase() === categoryFilter.toLowerCase();
       const matchesSearch =
-        row.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        row.product_name.toLowerCase().includes(searchValue.toLowerCase()) ||
         row.sku.toLowerCase().includes(searchValue.toLowerCase());
-      return matchesCategory && matchesSearch;
+      return matchesSearch;
     });
-  }, [data, categoryFilter, searchValue]);
-
-  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-  const paginatedData = filteredData.slice(
-    (page - 1) * rowsPerPage,
-    page * rowsPerPage
-  );
-
+  }, [data, searchValue]);
 
   return (
-    <div className="mt-4 overflow-auto border rounded-md dark:bg-[#1D293D] box-shadow-card dark:border-[#314158] ">
-      <Table className="">
+    <div className="mt-4 overflow-auto border rounded-md dark:bg-[#1D293D] box-shadow-card dark:border-[#314158]">
+      <Table>
         <TableHeader className="bg-transparent">
           <TableRow>
             <TableHead className="text-sm dark:text-[#90A1B9]">
@@ -70,11 +63,6 @@ export const DataBaseTable = ({
             <TableHead className="text-sm dark:text-[#90A1B9]">
               <div className="flex items-center gap-1">
                 Location <ArrowUpDown className="w-4 h-4" />
-              </div>
-            </TableHead>
-            <TableHead className="text-sm dark:text-[#90A1B9]">
-              <div className="flex items-center gap-1">
-                Category <ArrowUpDown className="w-4 h-4" />
               </div>
             </TableHead>
             <TableHead className="text-sm">Pack Size</TableHead>
@@ -103,35 +91,48 @@ export const DataBaseTable = ({
         </TableHeader>
 
         <TableBody>
-          {paginatedData.map((row, index) => (
-            <TableRow key={index}>
-              <TableCell className="text-sm">
-                {index + 1 + (page - 1) * rowsPerPage}
+          {filteredData.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={10} className="text-center text-sm py-8">
+                No inventory items found
               </TableCell>
-              <TableCell className="text-sm">{row.name}</TableCell>
-              <TableCell className="text-sm">{row.productName}</TableCell>
-              <TableCell className="text-sm">{row.sku}</TableCell>
-              <TableCell className="text-sm ">
-                <span className="dark:bg-[#314158] bg-gray-200 px-2 py-1 rounded-md w-fit">
-                  {row.category}
-                </span>
-              </TableCell>
-              <TableCell className="text-sm">{row.packSize}</TableCell>
-              <TableCell className="text-sm">{row.unit}</TableCell>
-              <TableCell className="text-sm">{row.currentPrice}</TableCell>
-              <TableCell className="text-sm">{row.lastPrice}</TableCell>
-              <TableCell className="text-sm">{row.lastUpdated}</TableCell>
-              <TableCell className="text-sm">{row.cpmUnit}</TableCell>
             </TableRow>
-          ))}
+          ) : (
+            filteredData.map((row, index) => (
+              <TableRow key={row.id}>
+                <TableCell className="text-sm">
+                  {index + 1 + (currentPage - 1) * 10}
+                </TableCell>
+                <TableCell className="text-sm">{row.product_name}</TableCell>
+                <TableCell className="text-sm">{row.sku}</TableCell>
+                <TableCell className="text-sm">{row.location_name}</TableCell>
+                <TableCell className="text-sm">
+                  {row.pack_size_description || "-"}
+                </TableCell>
+                <TableCell className="text-sm">{row.base_unit_symbol}</TableCell>
+                <TableCell className="text-sm">
+                  ${row.current_price?.toFixed(2) || "0.00"}
+                </TableCell>
+                <TableCell className="text-sm">
+                  ${row.last_price?.toFixed(2) || "0.00"}
+                </TableCell>
+                <TableCell className="text-sm">
+                  {new Date(row.last_updated).toLocaleDateString()}
+                </TableCell>
+                <TableCell className="text-sm">
+                  ${row.cost_per_unit?.toFixed(2) || "0.00"}
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
 
       {/* Pagination */}
       <Pagination
-        currentPage={page}
+        currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={(p) => setPage(p)}
+        onPageChange={onPageChange}
       />
     </div>
   );

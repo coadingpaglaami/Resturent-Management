@@ -1,4 +1,5 @@
 import { Allergen } from "./allergens";
+import { FoodStorage } from "./food-storage";
 import { Location } from "./location";
 import { RecipieCategory } from "./recipiecategory";
 
@@ -8,6 +9,7 @@ export const ConstrainMain = () => {
       <Allergen />
       <Location />
       <RecipieCategory />
+      <FoodStorage />
     </div>
   );
 };

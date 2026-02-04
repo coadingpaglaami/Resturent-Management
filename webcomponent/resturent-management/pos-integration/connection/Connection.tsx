@@ -1,3 +1,4 @@
+'use client';
 import { Heading } from "@/webcomponent/reusable";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,8 +12,10 @@ import {
   CheckCircle2,
   AlertCircle,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export const Connection = () => {
+  const router = useRouter();
   const posCards = [
     {
       key: "toast",
@@ -57,11 +60,12 @@ export const Connection = () => {
           icon: Link2,
           variant: "default",
           className:
-            "w-full dark:bg-gray-700 hover:dark:bg-gray-600 dark:text-gray-200",
+            "flex-1 dark:bg-gray-700 hover:dark:bg-gray-600 dark:text-gray-200",
         },
       ],
       logoBg: "dark:bg-gray-600/20",
       linkIcon: Link2Off,
+      viewurl:"/pos-integration/square",
     },
     {
       key: "clover",
@@ -77,9 +81,10 @@ export const Connection = () => {
           label: "Connect Clover",
           icon: Link2,
           variant: "default",
-          className: "w-full bg-gray-700 hover:bg-gray-600 text-gray-200",
+          className: "flex-1 bg-gray-700 hover:bg-gray-600 text-gray-200",
         },
       ],
+      viewurl:"/pos-integration/clover",
       logoBg: "dark:bg-green-600/20",
       linkIcon: Link2Off,
     },
@@ -97,10 +102,7 @@ export const Connection = () => {
           const LinkIcon = pos.linkIcon;
 
           return (
-            <Card
-              key={pos.key}
-              className="overflow-hidden"
-            >
+            <Card key={pos.key} className="overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center gap-4">
@@ -161,12 +163,16 @@ export const Connection = () => {
                             | "secondaryTwo"
                             | "buttonBlue") || "default"
                         }
+                      
                       >
-                        {Icon && <Icon className="w-4 h-4 mr-2" />}
+                        {Icon && <Icon className="" />}
                         {action.label}
                       </Button>
                     );
                   })}
+                  <Button className="" variant={"outline"} onClick={()=>router.push(pos.viewurl || '#')}>
+                    View
+                  </Button>
                 </div>
               </CardContent>
             </Card>
