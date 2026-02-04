@@ -125,14 +125,14 @@ export const sidbaarLinks = [
         label: "Connection",
         href: "/pos-integration/connection",
       },
-      // {
-      //   label: "Import Batches",
-      //   href: "/pos-integration/import-batches",
-      // },
-      // {
-      //   label: "Item Mapping",
-      //   href: "/pos-integration/item-mapping",
-      // },
+      {
+        label: "Square",
+        href: "/pos-integration/square",
+      },
+      {
+        label: "Clover",
+        href: "/pos-integration/clover",
+      },
     ],
   },
   {

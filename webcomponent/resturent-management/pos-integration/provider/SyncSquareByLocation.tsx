@@ -28,7 +28,7 @@ export const SquareSyncByLocation = () => {
 
     try {
       await mutateAsync({ location_id });
-      toast.success("Sync success ✅");
+      toast.success("POS synced successfully ");
     } catch (err) {
       const error = err as Error;
       toast.error(error?.message || "Sync failed ❌");
