@@ -24,8 +24,7 @@ export const TopSellingMenuItems = ({
     <Card className="w-full h-full p-4 dark:bg-[#1E2A37] box-shadow-card">
       <CardHeader>
         <CardTitle
-          className="text-lg font-semibold"
-          style={{ color: "#101828" }}
+          className="text-lg font-semibold dark:text-white text-[#101828]"
         >
           Top Selling Menu Items
         </CardTitle>
@@ -45,14 +44,16 @@ export const TopSellingMenuItems = ({
               <YAxis
                 dataKey="itemName"
                 type="category"
-                tick={{ fontSize: 12, fill: "#475467" }}
+                tick={{ fontSize: 15,  }}
                 width={120}
+                className="dark:text-white"
               />
 
               {/* MONEY VALUES */}
               <XAxis
                 type="number"
-                tick={{ fontSize: 12, fill: "#475467" }}
+                tick={{ fontSize: 15}}
+                className="dark:text-white"
               />
 
               <Tooltip />
