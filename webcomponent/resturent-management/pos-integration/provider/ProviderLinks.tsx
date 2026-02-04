@@ -1,5 +1,6 @@
 import { Props } from "@/types/Provider";
 import { ChevronRight } from "lucide-react";
+import { SquareSyncByLocation } from "./SyncSquareByLocation";
 
 export const ProviderLinks = async ({ params }: Props) => {
   const resolvedParams = await params;
@@ -59,6 +60,7 @@ export const ProviderLinks = async ({ params }: Props) => {
           </a>
         ))}
       </nav>
+      <SquareSyncByLocation />
     </div>
   );
 };

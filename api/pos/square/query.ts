@@ -6,13 +6,14 @@ import {
   SquareItem,
   SquareOrder,
 } from "@/interface/pos";
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
 import {
   getCatalogList,
   getSquareCustomerList,
   getSquareInvoiceList,
   getSquareItemList,
   getSquareOrderList,
+  squareSync,
 } from "./api";
 import { PaginatedResponse } from "@/interface/PaginatedResponse";
 
@@ -68,5 +69,12 @@ export const useGetSquareInvoiceListQuery = ({
     queryKey: ["squareInvoices", page, limit],
     queryFn: () => getSquareInvoiceList({ page, limit }),
     staleTime: 10 * 60 * 1000,
+  });
+};
+
+export const useSquareSyncMutation = () => {
+  return useMutation({
+    mutationKey: ["squareSyncToInventory"],
+    mutationFn: (payload: { location_id: string }) => squareSync(payload),
   });
 };

@@ -55,3 +55,7 @@ export const getSquareInvoiceList = async ({
   return data;
 };
 
+export const squareSync = async ({location_id}:{location_id: string}) => {
+  const { data } = await axios.post(`/square/sync-to-inventory/`, { location_id });
+  return data;
+}

@@ -1,10 +1,11 @@
 ﻿import { Props } from "@/types/Provider";
-import { Catalog } from "@/webcomponent/resturent-management";
+import {  CatalogProvider } from "@/webcomponent/resturent-management";
 
 export default async function ItemsPage({ params }: Props) {
+  const { provider } = await params;
 
   return (
-    <Catalog params={params} />
+    <CatalogProvider provider={provider} />
   )
   ;
 }
