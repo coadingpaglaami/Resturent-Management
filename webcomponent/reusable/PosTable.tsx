@@ -4,8 +4,7 @@ import React from "react";
 
 type Column<T> = {
   header: string;
-  accessorKey: keyof T;
-  render?: (row: T) => React.ReactNode;
+  cell: (row: T) => React.ReactNode;
 };
 
 type Props<T> = {
@@ -17,7 +16,7 @@ type Props<T> = {
   errorMessage?: string;
 };
 
-export const PosTablePage = <T extends Record<string, any>>({
+export const PosTablePage = <T,>({
   title,
   columns,
   data = [],
@@ -33,11 +32,8 @@ export const PosTablePage = <T extends Record<string, any>>({
         <table className="w-full text-sm">
           <thead className="bg-muted">
             <tr>
-              {columns.map((col) => (
-                <th
-                  key={String(col.accessorKey)}
-                  className="text-left p-3 font-medium"
-                >
+              {columns.map((col, index) => (
+                <th key={index} className="text-left p-3 font-medium">
                   {col.header}
                 </th>
               ))}
@@ -66,11 +62,9 @@ export const PosTablePage = <T extends Record<string, any>>({
             ) : (
               data.map((row, idx) => (
                 <tr key={idx} className="border-t">
-                  {columns.map((col) => (
-                    <td key={String(col.accessorKey)} className="p-3">
-                      {col.render
-                        ? col.render(row)
-                        : String(row[col.accessorKey] ?? "")}
+                  {columns.map((col, cidx) => (
+                    <td key={cidx} className="p-3">
+                      {col.cell(row)}
                     </td>
                   ))}
                 </tr>

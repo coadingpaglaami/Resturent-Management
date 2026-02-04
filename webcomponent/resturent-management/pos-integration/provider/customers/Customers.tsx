@@ -21,10 +21,10 @@ export const Customers = ({ provider }: { provider: string }) => {
         errorMessage={squareCustomers.error?.message}
         data={squareCustomers.data?.results || []}
         columns={[
-          { header: "Name", accessorKey: "given_name" },
-          { header: "Email", accessorKey: "email" },
-          { header: "Phone", accessorKey: "phone_number" },
-          { header: "Company Name", accessorKey: "company_name" },
+          { header: "Name", cell: (row) => row.given_name },
+          { header: "Email", cell: (row) => row.email },
+          { header: "Phone", cell: (row) => row.phone_number },
+          { header: "Company Name", cell: (row) => row.company_name },
         ]}
       />
     );
@@ -37,9 +37,9 @@ export const Customers = ({ provider }: { provider: string }) => {
         errorMessage={cloverCustomers.error?.message}
         data={cloverCustomers.data?.results || []}
         columns={[
-          { header: "Name", accessorKey: "first_name" },
-          { header: "Email", accessorKey: "email" },
-          { header: "Phone", accessorKey: "phone_number" },
+          { header: "Name", cell: (row) => row.first_name },
+          { header: "Email", cell: (row) => row.email },
+          { header: "Phone", cell: (row) => row.phone_number },
         ]}
       />
     );
