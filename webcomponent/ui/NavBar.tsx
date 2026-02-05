@@ -25,12 +25,22 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { clearTokens } from "@/lib/cookies";
+import { useLocationStore } from "@/store/location.store";
+import { useGetLocationsQuery } from "@/api/location";
 
 export const NavBar = () => {
   const [isLanguageOpen, setIsLanguageOpen] = useState(false); // State to control language options visibility
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const router = useRouter();
+  const { locationId, setLocationId } = useLocationStore();
+
+  const [page] = useState(1);
+  const limit = 10;
+
+  const { data, isLoading } = useGetLocationsQuery({ page, limit });
+
+  const locations = data?.results ?? [];
 
   const dropdownRef = useRef<HTMLDivElement | null>(null); // Specify the type of the reference
 
@@ -62,21 +72,22 @@ export const NavBar = () => {
 
   return (
     <div className="justify-between h-16 flex items-center shadow-md z-10">
-      <Select defaultValue="downtown">
+      <Select
+        value={locationId ?? undefined}
+        onValueChange={setLocationId}
+        disabled={isLoading}
+      >
         <SelectTrigger className="w-auto flex items-center space-x-2 p-2 rounded-md">
           <LocationEditIcon className="h-4 w-4" />
-          <SelectValue />
+          <SelectValue placeholder="Select location" />
         </SelectTrigger>
+
         <SelectContent className="rounded-md shadow-lg w-auto">
-          <SelectItem value="airport" className="cursor-pointer p-2">
-            Downtown Location
-          </SelectItem>
-          <SelectItem value="downtown" className="cursor-pointer p-2">
-            Airport Location
-          </SelectItem>
-          <SelectItem value="chinaTown" className="cursor-pointer p-2">
-            China Town Location
-          </SelectItem>
+          {locations.map((loc) => (
+            <SelectItem key={loc.id} value={loc.id}>
+              {loc.name}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
 

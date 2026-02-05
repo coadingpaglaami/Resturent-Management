@@ -13,7 +13,9 @@ export default async function AdminLayOut({
       </aside>
       <div className="flex flex-col flex-1 h-screen">
         <nav className="shrink-0">
-          <NavBar />
+          <TranstackProvider>
+            <NavBar />
+          </TranstackProvider>
         </nav>
         <main className="flex-1 overflow-auto max-md:px-4 dark:bg-[#0F172B] bg-[#F8FAFC] lg:px-6 px-2">
           <TranstackProvider>{children}</TranstackProvider>
