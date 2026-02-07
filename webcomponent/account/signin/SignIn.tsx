@@ -18,6 +18,7 @@ const signInSchema = z.object({
     .min(1, "Password is required"),
 });
 
+console.log(process.env.NEXT_PUBLIC_API_URL,'signin url ');
 type SignInFormData = z.infer<typeof signInSchema>;
 
 export const SignIn = () => {

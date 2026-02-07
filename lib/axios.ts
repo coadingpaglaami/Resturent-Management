@@ -1,8 +1,11 @@
 import axios from "axios";
 import { getAccessToken } from "./cookies";
 
+
+console.log(process.env.NEXT_PUBLIC_API_URL,'axios url ');
+
 const axiosInstance = axios.create({
-  baseURL: "https://jasonsaji.duckdns.org",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   timeout: 10000,
 });
 
