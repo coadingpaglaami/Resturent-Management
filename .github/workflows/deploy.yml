@@ -45,3 +45,5 @@ jobs:
             docker compose -f docker-compose.yml up -d
             docker system prune -af
             rm -rf resturent_management_latest.tar.gz
+            exit 0
+        
