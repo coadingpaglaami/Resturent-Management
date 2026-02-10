@@ -3,13 +3,20 @@ import { usePathname } from "next/navigation";
 import { settingsLink } from "./settingLink";
 import Link from "next/link";
 import clsx from "clsx";
+import { getRole } from "@/lib/cookies";
 
 export const SettingMenu = () => {
   const pathname = usePathname();
+
+  const role = getRole();
+ 
   return (
     <>
       {settingsLink.map((link, idx) => {
         const isActive = pathname === link.href;
+        if(role !== "ADMIN" && link.label === "Users & Roles") {
+          return null; // Skip rendering this link for non-admin users
+        }
         return (
           <Link
             key={idx}

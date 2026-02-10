@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation";
 import { clearTokens } from "@/lib/cookies";
 import { useLocationStore } from "@/store/location.store";
 import { useGetLocationsQuery } from "@/api/location";
+import { useGetUserProfileQuery } from "@/api/auth";
 
 export const NavBar = () => {
   const [isLanguageOpen, setIsLanguageOpen] = useState(false); // State to control language options visibility
@@ -39,6 +40,7 @@ export const NavBar = () => {
   const limit = 10;
 
   const { data, isLoading } = useGetLocationsQuery({ page, limit });
+  const { data: myData } = useGetUserProfileQuery();
 
   const locations = data?.results ?? [];
 
@@ -107,9 +109,9 @@ export const NavBar = () => {
         </div>
 
         <div>
-          <span className="font-semibold">John Smith</span>
+          <span className="font-semibold">{myData?.first_name}</span>
           <br />
-          <span className="text-gray-400">Manager</span>
+          <span className="text-gray-400">{myData?.role}</span>
         </div>
 
         {/* Use Popover here instead of Dropdown */}
@@ -121,7 +123,9 @@ export const NavBar = () => {
             ref={dropdownRef}
             className="rounded-mdshadow-lg w-48 flex flex-col gap-3.5"
           >
-            <PopoverItem>Profile</PopoverItem>
+            <PopoverItem onClick={() => router.push("/profile")}>
+              Profile
+            </PopoverItem>
             <PopoverItem>Appearance</PopoverItem>
             <PopoverItem>
               <Switch

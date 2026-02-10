@@ -1,88 +1,165 @@
 "use client";
-import { Mail } from "lucide-react";
 
+import { Mail, ArrowLeft, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { useRouter } from "next/navigation";
-import { AuthHeader } from "@/webcomponent/reusable/AuthHeader";
+import { useState } from "react";
 
-// Zod schema for validation
-const signInSchema = z.object({
-  email: z
-    .email("Please enter a valid email address")
-    .min(1, "Email is required"),
+import { AuthHeader } from "@/webcomponent/reusable/AuthHeader";
+import { useForgotPasswordMutation } from "@/api/auth";
+
+// Zod schema
+const forgotPasswordSchema = z.object({
+  email: z.email().min(1, "Email is required"),
 });
 
-type SignInFormData = z.infer<typeof signInSchema>;
+type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export const ForgotPassword = () => {
   const router = useRouter();
-  // Initialize react-hook-form with zod validation
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const mutation = useForgotPasswordMutation();
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<SignInFormData>({
-    resolver: zodResolver(signInSchema),
+    formState: { errors, isSubmitting: formIsSubmitting },
+    reset,
+  } = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: { email: "" },
   });
 
-  const onSubmit = (data: SignInFormData) => {
-    console.log(data);
-    router.push("/verification");
+  const isLoading = mutation.isPending || formIsSubmitting;
+
+  const onSubmit = async (data: ForgotPasswordFormData) => {
+    try {
+      await mutation.mutateAsync({ email: data.email });
+
+      setSuccessMessage(
+        "We've sent a password reset link to your email. Please check your inbox (and spam folder).",
+      );
+      reset(); // clear form after success
+    } catch (error) {
+      // You can show a toast/notification here in real app
+      console.error("Forgot password error:", error);
+      // Optionally set a form-level error if your API returns one
+    }
   };
 
   return (
-    <div className=" flex items-center justify-center p-4">
-      <div className="bg-white rounded-md shadow-xl w-full max-w-md p-8">
-        {/* Logo and Title */}
-        <div className="text-center mb-20">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 p-4">
+      <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+        {/* Header */}
+        <div className="px-8 pt-10 pb-6 text-center">
           <AuthHeader
-            title="Welcome Back"
-            subtitle="Sign in to your Restaurant Management Center"
+            title="Forgot Password?"
+            subtitle="No worries — we'll send you reset instructions."
           />
         </div>
 
-        {/* Form */}
-        <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-          {/* Email Field */}
-          <div>
-            <label className="block text-sm  mb-2">Email Address</label>
-            <div className="relative flex flex-row justify-between">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                <Mail size={20} />
-              </span>
-              <input
-                type="email"
-                placeholder="mail@example.com"
-                className={`w-full pl-10 pr-4 py-3 border ${
-                  errors.email ? "border-red-500" : "border-gray-300"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
-                {...register("email")}
-              />
+        {/* Success message */}
+        {successMessage ? (
+          <div className="px-8 pb-8 text-center space-y-6">
+            <div className="text-green-600 dark:text-green-400 font-medium">
+              {successMessage}
             </div>
-            {errors.email ? (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.email.message}
-              </p>
-            ) : (
-              <p className="text-xs">
-                We&apos;ll send a verification code to this email
-              </p>
-            )}
+            <button
+              onClick={() => router.push("/login")}
+              className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium transition"
+            >
+              <ArrowLeft size={16} />
+              Back to Sign In
+            </button>
           </div>
-
-          {/* Remember Me & Forgot Password */}
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 mt-8 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
+        ) : (
+          /* Form */
+          <form
+            className="px-8 pb-10 space-y-6"
+            onSubmit={handleSubmit(onSubmit)}
           >
-            Send OTP
-          </button>
-        </form>
+            {/* Email Field */}
+            <div className="space-y-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Email Address
+              </label>
+
+              <div className="relative">
+                <Mail
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
+                  size={18}
+                />
+                <input
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  className={`
+                    w-full pl-10 pr-4 py-3 rounded-lg border bg-white dark:bg-gray-800
+                    text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
+                    focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+                    transition-all duration-200
+                    ${errors.email ? "border-red-500" : "border-gray-300 dark:border-gray-700"}
+                  `}
+                  {...register("email")}
+                  disabled={isLoading}
+                />
+              </div>
+
+              {errors.email && (
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  {errors.email.message}
+                </p>
+              )}
+
+              {!errors.email && (
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  We&apos;ll email you a secure link to reset your password.
+                </p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`
+                w-full flex items-center justify-center gap-2
+                bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800
+                text-white font-semibold py-3 rounded-lg
+                shadow-md hover:shadow-lg transition-all duration-200
+                focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
+                disabled:opacity-60 disabled:cursor-not-allowed
+              `}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="animate-spin" size={18} />
+                  Sending...
+                </>
+              ) : (
+                "Send Reset Link"
+              )}
+            </button>
+
+            {/* Back link */}
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => router.push("/login")}
+                className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+              >
+                ← Back to Sign In
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

@@ -4,8 +4,16 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  success: boolean;
   access: string;
   refresh: string;
+  user: {
+    id: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    role: string;
+    avatar: string | null;
+    is_2fa_enabled: boolean;
+  };
 }
 

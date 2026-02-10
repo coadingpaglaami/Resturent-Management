@@ -14,3 +14,10 @@ export const clearTokens = (): void => {
   removeCookie("accessToken");
   removeCookie("refreshToken");
 };
+
+export const getRole = (): string | undefined =>
+  getCookie("role");
+
+export const setRole = (role: string): void => {
+  setCookie("role", role, { secure: false });
+};

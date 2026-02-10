@@ -5,3 +5,4 @@ export * from "./forgot-password";
 export * from "./verification";
 export * from "./change-password";
 export * from "./success";
+export * from "./join";

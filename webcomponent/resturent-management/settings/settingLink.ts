@@ -1,10 +1,21 @@
-import { Building2, Users, AlertTriangle, Scale, Plug, Bell, Paintbrush, LucideIcon } from "lucide-react";
 
-export const settingsLink: { label: string, icon: LucideIcon, href: string }[] = [
+import {
+  Building2,
+  Users,
+  AlertTriangle,
+  Scale,
+  Plug,
+  Bell,
+  Paintbrush,
+  LucideIcon,
+} from "lucide-react";
+
+export const settingsLink: { label: string; icon: LucideIcon; href: string }[] =
+  [
     {
-        label: "Organization",
-        href: '/settings/organization',
-        icon: Building2
+      label: "Organization",
+      href: "/settings/organization",
+      icon: Building2,
     },
     {
         label: "Users & Roles",
@@ -12,28 +23,28 @@ export const settingsLink: { label: string, icon: LucideIcon, href: string }[] =
         icon: Users
     },
     {
-        label: "Constraints",
-        href: '/settings/constraints',
-        icon: AlertTriangle
+      label: "Constraints",
+      href: "/settings/constraints",
+      icon: AlertTriangle,
     },
     {
-        label: "Units & Conversions",
-        href: '/settings/unit&conversions',
-        icon: Scale
+      label: "Units & Conversions",
+      href: "/settings/unit&conversions",
+      icon: Scale,
     },
     {
-        label: "Integrations",
-        href: '/settings/integrations',
-        icon: Plug
+      label: "Integrations",
+      href: "/settings/integrations",
+      icon: Plug,
     },
     {
-        label: "Notifications",
-        href: '/settings/notification',
-        icon: Bell
+      label: "Notifications",
+      href: "/settings/notification",
+      icon: Bell,
     },
     {
-        label: "Appearance",
-        href: '/settings/appearance',
-        icon: Paintbrush
-    }
-];
+      label: "Appearance",
+      href: "/settings/appearance",
+      icon: Paintbrush,
+    },
+  ];
