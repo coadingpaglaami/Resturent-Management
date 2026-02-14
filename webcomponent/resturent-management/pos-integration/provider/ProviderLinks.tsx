@@ -7,8 +7,8 @@ export const ProviderLinks = async ({ params }: Props) => {
 
   const links = [
     {
-      label: "Catalog",
-      link: `/pos-integration/${resolvedParams.provider}/catalog`,
+      label: "Category",
+      link: `/pos-integration/${resolvedParams.provider}/category`,
     },
     {
       label: "Items",

@@ -8,26 +8,27 @@ type Column<T> = {
 };
 
 type Props<T> = {
-  title: string;
+  title?: string;
   columns: Column<T>[];
   data?: T[];
   isLoading?: boolean;
   isError?: boolean;
   errorMessage?: string;
+
+  // 👇 Optional Action Renderer
+  renderActions?: (row: T) => React.ReactNode;
 };
 
 export const PosTablePage = <T,>({
-  title,
   columns,
   data = [],
   isLoading,
   isError,
   errorMessage,
+  renderActions,
 }: Props<T>) => {
   return (
     <div className="space-y-6 p-6">
-      <h1 className="text-xl font-semibold">{title}</h1>
-
       <div className="border rounded-md overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-muted">
@@ -37,25 +38,30 @@ export const PosTablePage = <T,>({
                   {col.header}
                 </th>
               ))}
+
+              {/* 👇 Action Header (only if provided) */}
+              {renderActions && (
+                <th className="text-left p-3 font-medium">Actions</th>
+              )}
             </tr>
           </thead>
 
           <tbody>
             {isLoading ? (
               <tr>
-                <td className="p-4" colSpan={columns.length}>
+                <td className="p-4" colSpan={columns.length + (renderActions ? 1 : 0)}>
                   Loading...
                 </td>
               </tr>
             ) : isError ? (
               <tr>
-                <td className="p-4" colSpan={columns.length}>
+                <td className="p-4" colSpan={columns.length + (renderActions ? 1 : 0)}>
                   {errorMessage || "Something went wrong"}
                 </td>
               </tr>
             ) : data.length === 0 ? (
               <tr>
-                <td className="p-4" colSpan={columns.length}>
+                <td className="p-4" colSpan={columns.length + (renderActions ? 1 : 0)}>
                   No data found
                 </td>
               </tr>
@@ -67,6 +73,13 @@ export const PosTablePage = <T,>({
                       {col.cell(row)}
                     </td>
                   ))}
+
+                  {/* 👇 Action Cell */}
+                  {renderActions && (
+                    <td className="p-3">
+                      {renderActions(row)}
+                    </td>
+                  )}
                 </tr>
               ))
             )}

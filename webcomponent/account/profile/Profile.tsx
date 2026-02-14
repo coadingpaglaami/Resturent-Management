@@ -83,7 +83,11 @@ const profileSchema = z
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
 export const Profile = () => {
-  const { data: user, isLoading: isProfileLoading,refetch } = useGetUserProfileQuery();
+  const {
+    data: user,
+    isLoading: isProfileLoading,
+    refetch,
+  } = useGetUserProfileQuery();
 
   const updateProfileMutation = useUpdateUserProfileMutation();
   const changePasswordMutation = useChangePasswordMutation();
