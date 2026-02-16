@@ -4,11 +4,16 @@ import { settingsLink } from "./settingLink";
 import Link from "next/link";
 import clsx from "clsx";
 import { getRole } from "@/lib/cookies";
+import { useEffect, useState } from "react";
 
 export const SettingMenu = () => {
   const pathname = usePathname();
+  const [role, setRoleState] = useState<string | undefined>(undefined);
 
-  const role = getRole();
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setRoleState(getRole());
+  }, []);
  
   return (
     <>
