@@ -16,9 +16,12 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v3
 
+      # ✅ Modified Docker build step to include build-arg
       - name: Build Docker Image
         run: |
-          docker build -t resturent_management:latest .
+          docker build \
+            --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} \
+            -t resturent_management:latest .
 
       - name: Save Docker Image
         run: |
@@ -46,4 +49,3 @@ jobs:
             docker system prune -af
             rm -rf resturent_management_latest.tar.gz
             exit 0
-        
