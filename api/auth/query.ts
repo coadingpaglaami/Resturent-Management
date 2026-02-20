@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-query";
 import {
   changePassword,
-  deleteUser,
+  deleteUserOrInvite,
   forgotPassword,
   getUserProfile,
   getUsersList,
@@ -158,10 +158,10 @@ export const usePauseUser = () => {
 
 export const useDeleteUserMutation = () => {
   return useMutation({
-    mutationKey: ["deleteUser"],
-    mutationFn: (userId: string) => deleteUser(userId),
+    mutationFn: deleteUserOrInvite,
   });
 };
+
 
 export const useGetUsersListQuery = (): UseQueryResult<
   EntityResponse[],

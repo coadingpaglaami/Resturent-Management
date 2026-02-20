@@ -18,7 +18,6 @@ import {
 } from "@/interface/Auth";
 import axios from "@/lib/axios";
 
-
 export const Login = async (payload: LoginRequest): Promise<LoginResponse> => {
   const { data } = await axios.post("/auth/login/", payload);
   return data;
@@ -35,21 +34,26 @@ export const inviteUser = async (payload: InviteUserRequest) => {
   return data;
 };
 
-
 // /auth/password/forgot
-export const forgotPassword = async (payload: ForgotPasswordRequest): Promise<ForgotPasswordResponse> => {
+export const forgotPassword = async (
+  payload: ForgotPasswordRequest,
+): Promise<ForgotPasswordResponse> => {
   const { data } = await axios.post(`/auth/password/forgot/`, payload);
   return data;
 };
 
 // /auth/password/reset
-export const resetPassword = async (payload: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
+export const resetPassword = async (
+  payload: ResetPasswordRequest,
+): Promise<ResetPasswordResponse> => {
   const { data } = await axios.post(`/auth/password/reset/`, payload);
   return data;
 };
 
 // /auth/register
-export const register = async (payload: RegisterRequest): Promise<RegisterResponse> => {
+export const register = async (
+  payload: RegisterRequest,
+): Promise<RegisterResponse> => {
   const { data } = await axios.post(`/auth/register/`, payload);
   return data;
 };
@@ -73,33 +77,48 @@ export const changePassword = async (payload: ChangePasswordRequest) => {
 };
 
 // /auth/users/{id}/role
-export const updateUserRole = async (userId: string, payload: UpdateUserRoleRequest) => {
+export const updateUserRole = async (
+  userId: string,
+  payload: UpdateUserRoleRequest,
+) => {
   const { data } = await axios.patch(`/auth/users/${userId}/role/`, payload);
   return data;
 };
 
 // /auth/invite/verify/{token}
-export const verifyInviteToken = async (token: string): Promise<InviteVerifyResponse> => {
+export const verifyInviteToken = async (
+  token: string,
+): Promise<InviteVerifyResponse> => {
   const { data } = await axios.get(`/auth/invite/verify/${token}`);
   return data;
 };
 
 export const getUsersList = async (): Promise<EntityResponse[]> => {
-  
   const { data } = await axios.get(`/auth/users/`);
   return data;
 };
 
 export const PauseUser = async (
   userId: string,
-  payload: { is_active: boolean }
+  payload: { is_active: boolean },
 ): Promise<UserProfile> => {
   const { data } = await axios.patch(`/auth/users/${userId}/role/`, payload);
   return data;
 };
 
-export const deleteUser = async (userId: string): Promise<{ message: string }> => {
-  const { data } = await axios.delete(`/auth/users/${userId}/delete/`);
+export const deleteUserOrInvite = async ({
+  id,
+  status,
+}: {
+  id: string;
+  status: string;
+}): Promise<{ message: string }> => {
+  const endpoint =
+    status !== "Active"
+      ? `/auth/invites/${id}/delete/`
+      : `/auth/users/${id}/delete/`;
+
+  const { data } = await axios.delete(endpoint);
   return data;
 };
 

@@ -155,14 +155,17 @@ export const UserAndRoles = () => {
   const handleConfirmDelete = () => {
     if (!userToDelete) return;
 
-    deleteMutation.mutate(userToDelete.id, {
-      onSuccess: () => {
-        toast.success("User deleted successfully!");
-        setIsDeleteOpen(false);
-        setUserToDelete(null);
-        refetch();
+    deleteMutation.mutate(
+      { id: userToDelete.id, status: userToDelete.status },
+      {
+        onSuccess: () => {
+          toast.success("User deleted successfully!");
+          setIsDeleteOpen(false);
+          setUserToDelete(null);
+          refetch();
+        },
       },
-    });
+    );
   };
 
   const getRoleBadgeClass = (role: string) => {
