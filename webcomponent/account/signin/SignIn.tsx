@@ -7,6 +7,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuthHeader } from "@/webcomponent/reusable/AuthHeader";
 import { useLoginMutation } from "@/api/auth";
+import { LoginResponse, TwoFAResponse } from "@/interface/Login";
+import { setEmail, setRole, setTokens, setType } from "@/lib/cookies";
 
 const signInSchema = z.object({
   email: z
@@ -18,12 +20,17 @@ const signInSchema = z.object({
     .min(1, "Password is required"),
 });
 
-console.log(process.env.NEXT_PUBLIC_API_URL,'signin url ');
+console.log(process.env.NEXT_PUBLIC_API_URL, "signin url ");
 type SignInFormData = z.infer<typeof signInSchema>;
 
 export const SignIn = () => {
   const router = useRouter();
   const loginMutation = useLoginMutation();
+  const isTwoFAResponse = (
+    data: LoginResponse | TwoFAResponse,
+  ): data is TwoFAResponse => {
+    return "two_fa_required" in data;
+  };
 
   const {
     register,
@@ -35,11 +42,27 @@ export const SignIn = () => {
 
   const onSubmit = async (data: SignInFormData) => {
     try {
-      await loginMutation.mutateAsync({
+      const res = await loginMutation.mutateAsync({
         email: data.email,
         password: data.password,
-      });
-      router.push("/dashboard");
+      },
+    
+    );
+
+      // ✅ Check for 2FA
+      if (isTwoFAResponse(res)) {
+        setEmail(data.email);
+        setType("two_factor_auth");
+        router.push("/verification");
+        return; // IMPORTANT
+      }
+
+      // ✅ Normal login
+      if ("access" in res && "refresh" in res) {
+        setTokens(res.access, res.refresh);
+        setRole(res.user.role);
+        router.push("/dashboard");
+      }
     } catch (error) {
       console.error("Login failed:", error);
     }
@@ -68,7 +91,9 @@ export const SignIn = () => {
                 type="email"
                 placeholder="mail@example.com"
                 className={`w-full pl-10 pr-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
-                  errors.email ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                  errors.email
+                    ? "border-red-500"
+                    : "border-gray-300 dark:border-gray-600"
                 }`}
                 {...register("email")}
                 disabled={loginMutation.isPending}
@@ -93,7 +118,9 @@ export const SignIn = () => {
                 type="password"
                 placeholder="Enter your password"
                 className={`w-full pl-10 pr-4 py-3 border rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
-                  errors.password ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                  errors.password
+                    ? "border-red-500"
+                    : "border-gray-300 dark:border-gray-600"
                 }`}
                 {...register("password")}
                 disabled={loginMutation.isPending}
@@ -119,7 +146,9 @@ export const SignIn = () => {
                 type="checkbox"
                 className="w-4 h-4 text-indigo-600 border-gray-300 dark:border-gray-600 rounded focus:ring-indigo-500"
               />
-              <span className="text-gray-600 dark:text-gray-400">Remember me</span>
+              <span className="text-gray-600 dark:text-gray-400">
+                Remember me
+              </span>
             </label>
             <Link
               href="/forgot-password"
@@ -131,11 +160,17 @@ export const SignIn = () => {
 
           <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
             By continuing an account, you agree to{" "}
-            <a href="#" className="text-indigo-600 dark:text-indigo-400 hover:underline">
+            <a
+              href="#"
+              className="text-indigo-600 dark:text-indigo-400 hover:underline"
+            >
               Terms of use
             </a>{" "}
             and{" "}
-            <a href="#" className="text-indigo-600 dark:text-indigo-400 hover:underline">
+            <a
+              href="#"
+              className="text-indigo-600 dark:text-indigo-400 hover:underline"
+            >
               Privacy Policy
             </a>
             .

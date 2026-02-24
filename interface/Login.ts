@@ -17,3 +17,8 @@ export interface LoginResponse {
   };
 }
 
+export interface TwoFAResponse {
+  message: string;
+  two_fa_required: boolean;
+  email: string;
+}

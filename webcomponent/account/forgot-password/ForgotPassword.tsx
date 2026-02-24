@@ -9,6 +9,7 @@ import { useState } from "react";
 
 import { AuthHeader } from "@/webcomponent/reusable/AuthHeader";
 import { useForgotPasswordMutation } from "@/api/auth";
+import { setEmail, setType } from "@/lib/cookies";
 
 // Zod schema
 const forgotPasswordSchema = z.object({
@@ -37,16 +38,24 @@ export const ForgotPassword = () => {
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
-      await mutation.mutateAsync({ email: data.email });
+      // ✅ Wait for success
+      await mutation.mutateAsync({
+        email: data.email,
+      });
+
+      // ✅ After success
+      setEmail(data.email);
+      setType("password_reset");
 
       setSuccessMessage(
         "We've sent a password reset link to your email. Please check your inbox (and spam folder).",
       );
-      reset(); // clear form after success
+
+      reset();
+
+      router.push("/verification");
     } catch (error) {
-      // You can show a toast/notification here in real app
       console.error("Forgot password error:", error);
-      // Optionally set a form-level error if your API returns one
     }
   };
 

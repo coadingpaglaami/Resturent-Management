@@ -1,4 +1,4 @@
-import { LoginRequest, LoginResponse } from "@/interface/Login";
+import { LoginRequest, LoginResponse, TwoFAResponse } from "@/interface/Login";
 import {
   Toggle2FARequest,
   InviteUserRequest,
@@ -18,9 +18,38 @@ import {
 } from "@/interface/Auth";
 import axios from "@/lib/axios";
 
-export const Login = async (payload: LoginRequest): Promise<LoginResponse> => {
+export const Login = async (
+  payload: LoginRequest,
+): Promise<LoginResponse | TwoFAResponse> => {
   const { data } = await axios.post("/auth/login/", payload);
   return data;
+};
+
+export const twoFAloginVerify = async (payload: {
+  email: string;
+  otp_code: string;
+}): Promise<LoginResponse> => {
+  const { data } = await axios.post("/auth/login/verify/", payload);
+  return data;
+};
+
+export const otpVerify = async (payload: {
+  type: "password_reset" | "two_factor_auth";
+  obj: {
+    email: string;
+    otp_code: string;
+  };
+}): Promise<{ message: string } | LoginResponse | undefined> => {
+  if (payload.type === "password_reset") {
+    const { data } = await axios.post(
+      `/auth/password/verify-otp/`,
+      payload.obj,
+    );
+    return data as { message: string };
+  } else if (payload.type === "two_factor_auth") {
+    const { data } = await axios.post(`/auth/login/verify/`, payload.obj);
+    return data as LoginResponse;
+  }
 };
 
 export const toggle2FA = async (payload: Toggle2FARequest) => {
@@ -39,6 +68,14 @@ export const forgotPassword = async (
   payload: ForgotPasswordRequest,
 ): Promise<ForgotPasswordResponse> => {
   const { data } = await axios.post(`/auth/password/forgot/`, payload);
+  return data;
+};
+
+export const verfiyOTP = async (payload: {
+  email: string;
+  otp_code: string;
+}): Promise<{ message: string }> => {
+  const { data } = await axios.post(`/auth/password/otp/verify/`, payload);
   return data;
 };
 

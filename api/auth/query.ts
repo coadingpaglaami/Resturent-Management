@@ -1,4 +1,4 @@
-import { LoginRequest, LoginResponse } from "@/interface/Login";
+import { LoginRequest, LoginResponse, TwoFAResponse } from "@/interface/Login";
 import {
   useMutation,
   UseMutationResult,
@@ -13,16 +13,18 @@ import {
   getUsersList,
   inviteUser,
   Login,
+  otpVerify,
   PauseUser,
   refreshToken,
   register,
   resetPassword,
   toggle2FA,
+  twoFAloginVerify,
   updateUserProfile,
   updateUserRole,
+  verfiyOTP,
   verifyInviteToken,
 } from "./api";
-import { setRole, setTokens } from "@/lib/cookies";
 import {
   ChangePasswordRequest,
   EntityResponse,
@@ -37,7 +39,7 @@ import {
 } from "@/interface/Auth";
 
 export const useLoginMutation = (): UseMutationResult<
-  LoginResponse,
+  LoginResponse | TwoFAResponse,
   Error,
   LoginRequest
 > => {
@@ -46,9 +48,30 @@ export const useLoginMutation = (): UseMutationResult<
     mutationFn: (data: LoginRequest) => {
       return Login(data);
     },
-    onSuccess: (data) => {
-      setTokens(data.access, data.refresh);
-      setRole(data.user.role);
+  });
+};
+
+export const useOtpVerifyMutation = () => {
+  return useMutation({
+    mutationKey: ["verifyOTP"],
+    mutationFn: (payload: {
+      type: "password_reset" | "two_factor_auth";
+      obj: { email: string; otp_code: string };
+    }) => {
+      return otpVerify(payload);
+    },
+  });
+};
+
+export const useTwoFALoginVerifyMutation = (): UseMutationResult<
+  LoginResponse,
+  Error,
+  { email: string; otp_code: string }
+> => {
+  return useMutation({
+    mutationKey: ["twoFALoginVerify"],
+    mutationFn: (data: { email: string; otp_code: string }) => {
+      return twoFAloginVerify(data);
     },
   });
 };
@@ -74,6 +97,18 @@ export const useForgotPasswordMutation = () => {
   return useMutation({
     mutationKey: ["forgotPassword"],
     mutationFn: (payload: { email: string }) => forgotPassword(payload),
+  });
+};
+
+export const useVerifyOTPQuery = (
+  email: string,
+  otp_code: string,
+): UseQueryResult<{ message: string }, Error> => {
+  return useQuery({
+    queryKey: ["verifyOTP", email, otp_code],
+    queryFn: () => verfiyOTP({ email, otp_code }),
+    enabled: !!email && !!otp_code,
+    staleTime: 10 * 60 * 1000, // 10 minutes
   });
 };
 
@@ -161,7 +196,6 @@ export const useDeleteUserMutation = () => {
     mutationFn: deleteUserOrInvite,
   });
 };
-
 
 export const useGetUsersListQuery = (): UseQueryResult<
   EntityResponse[],
